@@ -5,6 +5,10 @@ import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author BohdanCvejn
+ */
+
 public interface MushroomDao {
 
     /**
