@@ -10,15 +10,15 @@ import javax.validation.constraints.NotNull;
 public class MushroomHunter {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @Column(nullable=false,unique=true)
+    @Column(nullable = false, unique = true)
     private String firstName;
 
     @NotNull
-    @Column(nullable=false,unique=true)
+    @Column(nullable = false, unique = true)
     private String surname;
 
     private boolean isAdmin;
