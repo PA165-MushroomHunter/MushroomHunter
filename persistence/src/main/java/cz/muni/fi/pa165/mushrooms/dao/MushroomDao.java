@@ -27,6 +27,13 @@ public interface MushroomDao {
     public void create(Mushroom mushroom);
 
     /**
+     * Takes an object of type Mushroom and updates an entry in a database
+     *
+     * @param mushroom non-null object to be updated in a database
+     */
+    public void update(Mushroom mushroom);
+    
+    /**
      * Takes a mushroom object that shall be deleted from database
      *
      * @param mushroom non-null object to be deleted from the database
