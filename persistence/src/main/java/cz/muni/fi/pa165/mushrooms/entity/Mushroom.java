@@ -58,7 +58,7 @@ public class Mushroom {
 
     // "... in the following string format: "June - July" (month - month)"
     // later we can change it to Date type to use the dates for sorting of mushrooms
-    public void setIntervalOfOccurence(String startMonth, String endMonth) {
+    public void setIntervalOfOccurrence(String startMonth, String endMonth) {
         this.intervalOfOccurrence = startMonth + " - " + endMonth;
     }
 
