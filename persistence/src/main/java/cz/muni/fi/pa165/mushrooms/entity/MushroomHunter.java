@@ -24,7 +24,7 @@ public class MushroomHunter {
     @NotNull
     @Column(nullable=false)
     private String surname;
-
+  
     @OneToMany
     @JoinColumn(name="hunter_visit", nullable=false)
     Set<Visit> visits = new HashSet<>();
@@ -37,6 +37,8 @@ public class MushroomHunter {
 
     @Column
     private String personalInfo;
+  
+  
 
     public Long getId() {
         return id;
