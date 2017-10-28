@@ -10,27 +10,26 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 /**
- *
  * @author Lindar84, BohdanCvejn
  */
 @Entity
 public class Mushroom {
-  
+
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @Column(nullable=false, unique = true)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @NotNull
-    @Column(nullable=false)
+    @Column(nullable = false)
     private MushroomType type;
 
     @NotNull
-    @Column(nullable=false)
-    private String intervalOfOccurence;
+    @Column(nullable = false)
+    private String intervalOfOccurrence;
 
 
     public Long getId() {
@@ -53,23 +52,25 @@ public class Mushroom {
         this.type = type;
     }
 
-    public String getIntervalOfOccurence() {
-        return intervalOfOccurence;
+    public String getIntervalOfOccurrence() {
+        return intervalOfOccurrence;
     }
 
     // "... in the following string format: "June - July" (month - month)"
     // later we can change it to Date type to use the dates for sorting of mushrooms
     public void setIntervalOfOccurence(String startMonth, String endMonth) {
-        this.intervalOfOccurence = startMonth + " - " + endMonth;
+        this.intervalOfOccurrence = startMonth + " - " + endMonth;
     }
 
     // Do we want to write ID?
+    // ID is in every Entity, so I would stay consistent
     @Override
     public String toString() {
         return "Mushroom{" +
-                "name = '" + name + '\'' +
-                ", type = " + type +
-                ", interval of occurence = '" + intervalOfOccurence + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", intervalOfOccurrence='" + intervalOfOccurrence + '\'' +
                 '}';
     }
 
@@ -80,7 +81,7 @@ public class Mushroom {
 
         Mushroom mushroom = (Mushroom) o;
 
-        return name.equals(mushroom.name) && type.equals(mushroom.type) && intervalOfOccurence.equals(mushroom.intervalOfOccurence);
+        return name.equals(mushroom.name) && type.equals(mushroom.type) && intervalOfOccurrence.equals(mushroom.intervalOfOccurrence);
     }
 
     @Override
@@ -88,18 +89,8 @@ public class Mushroom {
 
         int result = getId().hashCode();
         result = 31 * result + getName().hashCode();
-        result = 31 * result + getMushroomType().hashCode();
-        result = 31 * result + getIntervalOfOccurence().hashCode();
+        result = 31 * result + getType().hashCode();
+        result = 31 * result + getIntervalOfOccurrence().hashCode();
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Mushroom{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", mushroomType=" + mushroomType +
-                ", intervalOfOccurence=" + intervalOfOccurence +
-                '}';
     }
 }
