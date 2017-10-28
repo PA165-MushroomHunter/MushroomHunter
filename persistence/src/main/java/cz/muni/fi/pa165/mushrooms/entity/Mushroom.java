@@ -88,18 +88,9 @@ public class Mushroom {
 
         int result = getId().hashCode();
         result = 31 * result + getName().hashCode();
-        result = 31 * result + getMushroomType().hashCode();
+        result = 31 * result + getType().hashCode();
         result = 31 * result + getIntervalOfOccurence().hashCode();
         return result;
     }
 
-    @Override
-    public String toString() {
-        return "Mushroom{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", mushroomType=" + mushroomType +
-                ", intervalOfOccurence=" + intervalOfOccurence +
-                '}';
-    }
 }
