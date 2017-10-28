@@ -93,4 +93,5 @@ public class Mushroom {
         result = 31 * result + getIntervalOfOccurrence().hashCode();
         return result;
     }
+
 }
