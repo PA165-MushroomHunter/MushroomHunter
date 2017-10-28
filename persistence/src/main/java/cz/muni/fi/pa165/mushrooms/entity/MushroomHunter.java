@@ -1,29 +1,44 @@
 package cz.muni.fi.pa165.mushrooms.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Created by Buvko on 18.10.2017.
+ * @author Buvko
  */
 @Entity
 public class MushroomHunter {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @Column(nullable = false, unique = true)
+    @Column(nullable=false)
     private String firstName;
 
     @NotNull
-    @Column(nullable = false, unique = true)
+    @Column(nullable=false)
     private String surname;
+  
+    @OneToMany
+    @JoinColumn(name="hunter_visit", nullable=false)
+    Set<Visit> visits = new HashSet<>();
 
     private boolean isAdmin;
 
+    @Column
     private String personalInfo;
+  
+  
 
     public Long getId() {
         return id;
@@ -61,6 +76,14 @@ public class MushroomHunter {
         isAdmin = admin;
     }
 
+    public Set<Visit> getVisits() {
+        return visits;
+    }
+
+    public void visitForest(Visit visit) {
+        visits.add(visit);
+    }
+
     @Override
     public String toString() {
         return "MushroomHunter{" +
@@ -90,5 +113,4 @@ public class MushroomHunter {
         result = 31 * result + (getPersonalInfo() != null ? getPersonalInfo().hashCode() : 0);
         return result;
     }
-
 }

@@ -9,7 +9,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 /**
- * Created by Buvko on 20.10.2017.
+ * @author Buvko
  */
 
 @Repository
@@ -40,24 +40,24 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
     }
 
     @Override
-    public MushroomHunter findByFirstName(String firstName) {
+    public List<MushroomHunter> findByFirstName(String firstName) {
         try {
             return em
                     .createQuery("select c from MushroomHunter c where firstName = :firstName",
                             MushroomHunter.class).setParameter("firstName", firstName)
-                    .getSingleResult();
+                    .getResultList();
         } catch (NoResultException nrf) {
             return null;
         }
     }
 
     @Override
-    public MushroomHunter findBySurname(String surname) {
+    public List<MushroomHunter> findBySurname(String surname) {
         try {
             return em
                     .createQuery("select c from MushroomHunter c where surname = :surname",
                             MushroomHunter.class).setParameter("surname", surname)
-                    .getSingleResult();
+                    .getResultList();
         } catch (NoResultException nrf) {
             return null;
         }

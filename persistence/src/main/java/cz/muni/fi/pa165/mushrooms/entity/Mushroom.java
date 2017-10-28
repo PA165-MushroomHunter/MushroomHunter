@@ -1,37 +1,37 @@
 package cz.muni.fi.pa165.mushrooms.entity;
 
-import javax.persistence.*;
+import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 
 /**
- * @author BohdanCvejn
+ *
+ * @author Lindar84, BohdanCvejn
  */
-
 @Entity
 public class Mushroom {
-
-    public enum MushroomType {
-        EDIBLE,
-        UNEDIBLE,
-        POISONOUS;
-    }
-
+  
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @Column(nullable = false, unique = true)
+    @Column(nullable=false, unique = true)
     private String name;
 
     @NotNull
-    @Column(nullable = false, unique = true)
-    private MushroomType mushroomType;
+    @Column(nullable=false)
+    private MushroomType type;
 
     @NotNull
-    @Column(nullable = false, unique = true)
-    private Date intervalOfOccurence;
+    @Column(nullable=false)
+    private String intervalOfOccurence;
+
 
     public Long getId() {
         return id;
@@ -41,45 +41,51 @@ public class Mushroom {
         return name;
     }
 
-    public MushroomType getMushroomType() {
-        return mushroomType;
-    }
-
-    public Date getIntervalOfOccurence() {
-        return intervalOfOccurence;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setMushroomType(MushroomType mushroomType) {
-        this.mushroomType = mushroomType;
+    public MushroomType getType() {
+        return type;
     }
 
-    public void setIntervalOfOccurence(Date intervalOfOccurence) {
-        this.intervalOfOccurence = intervalOfOccurence;
+    public void setType(MushroomType type) {
+        this.type = type;
+    }
+
+    public String getIntervalOfOccurence() {
+        return intervalOfOccurence;
+    }
+
+    // "... in the following string format: "June - July" (month - month)"
+    // later we can change it to Date type to use the dates for sorting of mushrooms
+    public void setIntervalOfOccurence(String startMonth, String endMonth) {
+        this.intervalOfOccurence = startMonth + " - " + endMonth;
+    }
+
+    // Do we want to write ID?
+    @Override
+    public String toString() {
+        return "Mushroom{" +
+                "name = '" + name + '\'' +
+                ", type = " + type +
+                ", interval of occurence = '" + intervalOfOccurence + '\'' +
+                '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Mushroom)) return false;
+        if (o == null || !(o instanceof Mushroom)) return false;
 
         Mushroom mushroom = (Mushroom) o;
 
-        if (!getId().equals(mushroom.getId())) return false;
-        if (!getName().equals(mushroom.getName())) return false;
-        if (getMushroomType() != mushroom.getMushroomType()) return false;
-        return getIntervalOfOccurence().equals(mushroom.getIntervalOfOccurence());
+        return name.equals(mushroom.name) && type.equals(mushroom.type) && intervalOfOccurence.equals(mushroom.intervalOfOccurence);
     }
 
     @Override
     public int hashCode() {
+
         int result = getId().hashCode();
         result = 31 * result + getName().hashCode();
         result = 31 * result + getMushroomType().hashCode();
