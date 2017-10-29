@@ -5,26 +5,26 @@ import cz.muni.fi.pa165.mushrooms.validation.PersistenceSampleApplicationContext
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Created by Matúš on 28.10.2017.
  */
 @ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class ForestDaoTest extends AbstractJUnit4SpringContextTests {
+public class ForestDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Autowired
     private ForestDao forestDao;
@@ -32,18 +32,16 @@ public class ForestDaoTest extends AbstractJUnit4SpringContextTests {
     @PersistenceContext
     private EntityManager em;
 
-    @PersistenceUnit
-    private EntityManagerFactory emf;
-
     private Forest forest;
 
     @Before
     public void setUp(){
         forest = new Forest();
-        forest.setName("Sorrowful");
-        forest.setDescription("Sorrowful forest in South Wisconsin");
+        forest.setName("Dun Morogh");
+        forest.setDescription("Dun Morogh forest in South Wisconsin");
 
         em.persist(forest);
+        em.flush();
     }
 
     @Test
@@ -55,40 +53,97 @@ public class ForestDaoTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void findById_nullId() throws Exception {
-        forestDao.findById(null);
+        assertThatThrownBy(() -> forestDao.findById(null)).hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    public void create() throws Exception {
+    public void create_validForest() throws Exception {
+        int sizeBeforeCreate = forestDao.findAll().size();
         Forest testForest = new Forest();
-        testForest.setName("Dark");
+        testForest.setName("Duskwood");
+
         forestDao.create(testForest);
         Forest foundForest = em.find(Forest.class, testForest.getId());
-        Forest foundForest1 = em.find(Forest.class, forest.getId());
 
-        System.out.println("\n\n"+ foundForest + " " + foundForest1);
+        assertThat(foundForest).isNotNull();
+        assertThat(forestDao.findAll().size()).isEqualTo(sizeBeforeCreate + 1);
     }
 
     @Test
-    public void delete() throws Exception {
+    public void create_nullForest() throws Exception {
+        assertThatThrownBy(() -> forestDao.create(null)).hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void create_ForestWithNullName() throws Exception {
         Forest testForest = new Forest();
-        testForest.setName("Dark");
-        forestDao.create(testForest);
-        Forest foundForest = em.find(Forest.class, testForest.getId());
-        System.out.println("\n\n"+ foundForest);
-        forestDao.delete(foundForest);
-        foundForest = em.find(Forest.class, testForest.getId());
-        System.out.println("\n\n"+ foundForest);
+        testForest.setName(null);
+
+        assertThatThrownBy(() -> forestDao.create(testForest)).isInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
+    public void create_ForestWithNonUniqueName() throws Exception {
+        Forest testForest = new Forest();
+        testForest.setName("Dun Morogh");
+
+       assertThatThrownBy(() -> forestDao.create(testForest)).isInstanceOf(JpaSystemException.class);
+    }
+
+    @Test
+    public void create_ExistingForest() {
+        int sizeBeforeCreate = forestDao.findAll().size();
+        forestDao.create(forest);
+
+        // Inserting same object will not raise the number of database entities
+        assertThat(forestDao.findAll().size()).isEqualTo(sizeBeforeCreate);
+    }
+
+    @Test
+    public void create_ForestWithExistingId() {
+        int sizeBeforeCreate = forestDao.findAll().size();
+        Forest testForest = new Forest();
+        testForest.setId(forest.getId());
+
+        // Inserting same object will not raise the number of database entities
+        assertThat(forestDao.findAll().size()).isEqualTo(sizeBeforeCreate);
+    }
+
+    @Test
+    public void delete_validForest() throws Exception {
+        int sizeBeforeCreate = forestDao.findAll().size();
+
+        forestDao.delete(forest);
+        em.flush();
+
+        assertThat(forestDao.findAll().size()).isEqualTo(sizeBeforeCreate - 1);
+    }
+
+    @Test
+    public void delete_nullForest() throws Exception {
+        assertThatThrownBy(() -> forestDao.delete(null)).hasRootCauseInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void delete_nonExistingForest() {
+        int sizeBeforeCreate = forestDao.findAll().size();
+        Forest testForest = new Forest();
+        testForest.setName("Ashenvale");
+
+        forestDao.delete(testForest);
+        em.flush();
+
+        assertThat(forestDao.findAll().size()).isEqualTo(sizeBeforeCreate);
     }
 
     @Test
     public void findAll() throws Exception {
         Forest testForest = new Forest();
-        testForest.setName("Dark");
+        testForest.setName("Silverpine Forest");
         forestDao.create(testForest);
 
         List<Forest> forests = forestDao.findAll();
-        System.out.println("\n\n" + forests.toString());
+        // TODO
     }
 
     @Test
