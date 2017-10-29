@@ -55,7 +55,7 @@ public class ForestDaoTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void findById_nullId() throws Exception {
-        forestDao.findById(null)
+        forestDao.findById(null);
     }
 
     @Test
