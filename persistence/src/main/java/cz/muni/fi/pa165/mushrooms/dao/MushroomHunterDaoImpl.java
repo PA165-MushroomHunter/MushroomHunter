@@ -29,24 +29,24 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
     }
 
     @Override
-    public void create(MushroomHunter c) {
-        if (c == null) {
+    public void create(MushroomHunter mushroomHunter) {
+        if (mushroomHunter == null){
             throw new IllegalArgumentException("Null mushroom hunter at create.");
         }
-        em.persist(c);
+        em.persist(mushroomHunter);
     }
 
     @Override
-    public void delete(MushroomHunter c) {
-        em.remove(em.contains(c) ? c : em.merge(c));
+    public void delete(MushroomHunter mushroomHunter) {
+        em.remove(em.contains(mushroomHunter) ? mushroomHunter : em.merge(mushroomHunter));
     }
 
     @Override
-    public void update(MushroomHunter c) {
-        if (c == null) {
+    public void update(MushroomHunter mushroomHunter) {
+        if (mushroomHunter == null){
             throw new IllegalArgumentException("Null mushroom hunter at update.");
         }
-        em.merge(c);
+        em.merge(mushroomHunter);
     }
 
     @Override
