@@ -1,6 +1,9 @@
 package cz.muni.fi.pa165.mushrooms.dao;
 
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -11,7 +14,9 @@ import java.util.List;
  *
  * @author lindar84
  */
-public class ForestDAOImpl implements ForestDao {
+@Repository
+@Transactional(propagation = Propagation.REQUIRED)
+public class ForestDaoImpl implements ForestDao {
 
     @PersistenceContext
     private EntityManager em;
