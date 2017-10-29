@@ -11,7 +11,6 @@ import java.util.List;
 /**
  * @author Buvko
  */
-
 @Repository
 public class MushroomHunterDaoImpl implements MushroomHunterDao {
 
@@ -30,29 +29,29 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
     }
 
     @Override
-    public void create(MushroomHunter c) {
-        if (c == null){
+    public void create(MushroomHunter mushroomHunter) {
+        if (mushroomHunter == null){
             throw new IllegalArgumentException("Null mushroom hunter at create.");
         }
-        em.persist(c);
+        em.persist(mushroomHunter);
     }
 
     @Override
-    public void delete(MushroomHunter c) {
-        em.remove(em.contains(c) ? c : em.merge(c));
+    public void delete(MushroomHunter mushroomHunter) {
+        em.remove(em.contains(mushroomHunter) ? mushroomHunter : em.merge(mushroomHunter));
     }
 
     @Override
-    public void update(MushroomHunter c) {
-        if (c == null){
+    public void update(MushroomHunter mushroomHunter) {
+        if (mushroomHunter == null){
             throw new IllegalArgumentException("Null mushroom hunter at update.");
         }
-        em.merge(c);
+        em.merge(mushroomHunter);
     }
 
     @Override
     public List<MushroomHunter> findByFirstName(String firstName) {
-        if(firstName == null) {
+        if (firstName == null) {
             throw new IllegalArgumentException("firstName is null");
         }
 
@@ -68,7 +67,7 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
 
     @Override
     public List<MushroomHunter> findBySurname(String surname) {
-        if(surname == null) {
+        if (surname == null) {
             throw new IllegalArgumentException("surname is null");
         }
         try {
@@ -83,13 +82,13 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
 
     @Override
     public List<MushroomHunter> findByNickame(String userNickname) {
-        if(userNickname == null) {
+        if (userNickname == null) {
             throw new IllegalArgumentException("user nickname is null");
         }
         try {
             return em.createQuery("select c from MushroomHunter c where c.userNickname like :userNickname", MushroomHunter.class)
-                    .setParameter("userNickname", "%"+userNickname+"%").getResultList();
-        }catch (NoResultException e){
+                    .setParameter("userNickname", "%" + userNickname + "%").getResultList();
+        } catch (NoResultException e) {
             return null;
         }
     }
