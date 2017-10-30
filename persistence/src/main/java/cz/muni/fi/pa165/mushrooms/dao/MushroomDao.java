@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.mushrooms.dao;
 
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
+import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
 
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,14 @@ public interface MushroomDao {
     public Mushroom findById(Long id);
 
     /**
+     * Takes mushroom type and returns a corresponding List of found entities
+     *
+     * @param mushroomType non-null
+     * @return List of Mushroom, empty List if no Mushroom is found
+     */
+    public List<Mushroom> findByMushroomType(MushroomType mushroomType);
+
+    /**
      * Takes an object of type Mushroom and creates an entry in a database
      *
      * @param mushroom non-null object to be created in a database
@@ -32,7 +41,7 @@ public interface MushroomDao {
      * @param mushroom non-null object to be updated in a database
      */
     public void update(Mushroom mushroom);
-    
+
     /**
      * Takes a mushroom object that shall be deleted from database
      *
@@ -62,5 +71,5 @@ public interface MushroomDao {
      * @param toMonth   name of the month, non-null
      * @return List of Mushroom within given range, empty List if no Mushroom is found
      */
-    public Mushroom findByIntervalOfOccurrence(Date fromMonth, Date toMonth);
+    public List<Mushroom> findByIntervalOfOccurrence(String fromMonth, String toMonth);
 }
