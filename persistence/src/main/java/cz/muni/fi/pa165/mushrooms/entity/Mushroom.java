@@ -10,34 +10,31 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 /**
- *
- * @author Lindar84
+ * @author Lindar84, BohdanCvejn
  */
 @Entity
 public class Mushroom {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, unique=true)
     private Long id;
 
     @NotNull
-    @Column(nullable=false, unique = true)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @NotNull
-    @Column(nullable=false)
+    @Column(nullable = false)
     private MushroomType type;
 
     @NotNull
-    @Column(nullable=false)
-    private String intervalOfOccurence;
+    @Column(nullable = false)
+    private String intervalOfOccurrence;
 
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -56,23 +53,25 @@ public class Mushroom {
         this.type = type;
     }
 
-    public String getIntervalOfOccurence() {
-        return intervalOfOccurence;
+    public String getIntervalOfOccurrence() {
+        return intervalOfOccurrence;
     }
 
     // "... in the following string format: "June - July" (month - month)"
-    // - is String enought? Wouldn't we need to use the dates for some sorting of mushrooms?
-    public void setIntervalOfOccurence(String startMonth, String endMonth) {
-        this.intervalOfOccurence = startMonth + " - " + endMonth;
+    // later we can change it to Date type to use the dates for sorting of mushrooms
+    public void setIntervalOfOccurrence(String startMonth, String endMonth) {
+        this.intervalOfOccurrence = startMonth + " - " + endMonth;
     }
 
     // Do we want to write ID?
+    // ID is in every Entity, so I would stay consistent
     @Override
     public String toString() {
         return "Mushroom{" +
-                "name = '" + name + '\'' +
-                ", type = " + type +
-                ", interval of occurence = '" + intervalOfOccurence + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", intervalOfOccurrence='" + intervalOfOccurrence + '\'' +
                 '}';
     }
 
@@ -83,14 +82,17 @@ public class Mushroom {
 
         Mushroom mushroom = (Mushroom) o;
 
-        if(!name.equals(mushroom.name)) return false;
-        if(!type.equals(mushroom.type)) return false;
-        return intervalOfOccurence.equals(mushroom.intervalOfOccurence);
+        return name.equals(mushroom.name) && type.equals(mushroom.type) && intervalOfOccurrence.equals(mushroom.intervalOfOccurrence);
     }
 
     @Override
     public int hashCode() {
-        return 37 * name.hashCode() * type.hashCode() * intervalOfOccurence.hashCode();
+
+        int result = getId().hashCode();
+        result = 31 * result + getName().hashCode();
+        result = 31 * result + getType().hashCode();
+        result = 31 * result + getIntervalOfOccurrence().hashCode();
+        return result;
     }
 
 }
