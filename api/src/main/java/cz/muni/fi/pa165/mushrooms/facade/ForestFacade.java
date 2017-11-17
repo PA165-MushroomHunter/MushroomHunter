@@ -6,7 +6,7 @@ import cz.muni.fi.pa165.mushrooms.dto.MushroomDTO;
 import java.util.List;
 
 /**
- * Facade layer of the Forest type.
+ * Facade layer of the Forest type objects.
  *
  * @author bencikpeter, bohdancvejn, bkompis, Lindar84, Buvko
  */
@@ -45,6 +45,7 @@ public interface ForestFacade {
      *
      * @param forest is a Forest which you want to delete
      * @throws IllegalArgumentException on null Forest given as a parameter
+     * @throws TypeNotPresentException if the forest given as a parameter doesn't exist in the database
      */
     void deleteForest(ForestDTO forest);
 
@@ -53,7 +54,8 @@ public interface ForestFacade {
      * You are not able to update an id of the forest.
      *
      * @param forest is a Forest to be updated in a database
-     * @throws IllegalArgumentException on null forest given as an parameter
+     * @throws IllegalArgumentException on null forest given as a parameter
+     * @throws TypeNotPresentException if the forest given as a parameter doesn't exist in the database
      */
     void updateForest(ForestDTO forest);
 
@@ -61,7 +63,7 @@ public interface ForestFacade {
      * Takes an object of type Forest and creates an entry in a database.
      *
      * @param forest is a Forest to be created in a database
-     * @throws IllegalArgumentException on null forest given as an parameter
+     * @throws IllegalArgumentException on null forest given as a parameter
      */
     void createForest(ForestDTO forest);
 
