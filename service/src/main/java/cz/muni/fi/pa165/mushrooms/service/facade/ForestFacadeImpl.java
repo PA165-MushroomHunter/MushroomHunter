@@ -23,11 +23,6 @@ public class ForestFacadeImpl implements ForestFacade {
     }
 
     @Override
-    public ForestDTO findByMushroom(MushroomDTO mushroom) {
-        return null;
-    }
-
-    @Override
     public void deleteForest(ForestDTO forest) {
 
     }
