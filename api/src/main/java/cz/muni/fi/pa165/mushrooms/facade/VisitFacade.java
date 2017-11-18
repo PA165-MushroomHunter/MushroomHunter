@@ -27,7 +27,7 @@ public interface VisitFacade {
      *
      * @param visit is a Visit object
      * @throws IllegalArgumentException on null visit given as a parameter
-     * @throws TypeNotPresentException if the visit given as a parameter doesn't exist in the database
+     *      or if the visit given as a parameter doesn't exist in the database
      */
     void deleteVisit(VisitDTO visit);
 
@@ -36,7 +36,7 @@ public interface VisitFacade {
      *
      * @param visit is a Visit object
      * @throws IllegalArgumentException on null visit given as a parameter
-     * @throws TypeNotPresentException if the visit given as a parameter doesn't exist in the database
+     *      or if the visit given as a parameter doesn't exist in the database
      */
     void updateVisit(VisitDTO visit);
 
@@ -55,7 +55,7 @@ public interface VisitFacade {
      * @return List of all visits in the forest, empty List if there nobody enter
      *
      * @throws IllegalArgumentException on null Forest given as a parameter
-     * @throws TypeNotPresentException if the Forest given as a parameter doesn't exist in the database
+     *      or if the Forest given as a parameter doesn't exist in the database
      */
     List<VisitDTO> listAllVisitsForForest(ForestDTO forest);
 
@@ -66,7 +66,7 @@ public interface VisitFacade {
      * @return List of all visits in forests carried out by the mushroomHunter, empty List if he hasn't been to a forest yet
      *
      * @throws IllegalArgumentException on null MushroomHunter given as a parameter
-     * @throws TypeNotPresentException if the MushroomHunter given as a parameter doesn't exist in the database
+     *      or if the MushroomHunter given as a parameter doesn't exist in the database
      */
     List<VisitDTO> listAllVisitsForMushromHunter(MushroomHunterDTO mushroomHunter);
 
