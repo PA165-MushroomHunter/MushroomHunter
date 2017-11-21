@@ -68,7 +68,7 @@ public interface VisitFacade {
      * @throws IllegalArgumentException on null MushroomHunter given as a parameter
      *      or if the MushroomHunter given as a parameter doesn't exist in the database
      */
-    List<VisitDTO> listAllVisitsForMushromHunter(MushroomHunterDTO mushroomHunter);
+    List<VisitDTO> listAllVisitsForMushroomHunter(MushroomHunterDTO mushroomHunter);
 
 
     //List<VisitDTO> listAllVisitsByMushroom(MushroomDTO mushroom);

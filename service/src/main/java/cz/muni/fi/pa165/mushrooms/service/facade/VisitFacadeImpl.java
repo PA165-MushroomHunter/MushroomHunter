@@ -39,7 +39,7 @@ public class VisitFacadeImpl implements VisitFacade {
     }
 
     @Override
-    public List<VisitDTO> listAllVisitsForMushromHunter(MushroomHunterDTO mushroomHunter) {
+    public List<VisitDTO> listAllVisitsForMushroomHunter(MushroomHunterDTO mushroomHunter) {
         return null;
     }
 }
