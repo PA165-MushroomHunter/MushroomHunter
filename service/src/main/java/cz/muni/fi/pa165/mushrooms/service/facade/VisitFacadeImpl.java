@@ -52,7 +52,8 @@ public class VisitFacadeImpl implements VisitFacade {
         newVisit.setForest(forest);
         newVisit.setHunter(hunter);
 
-        System.err.println(service.findAllVisits().size());
+        System.err.println(forest.getId());
+        System.err.println(hunter.getId());
 
         service.createVisit(newVisit);
 

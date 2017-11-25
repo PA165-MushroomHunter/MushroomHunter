@@ -4,9 +4,7 @@ import cz.muni.fi.pa165.mushrooms.dto.*;
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
 import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
 import cz.muni.fi.pa165.mushrooms.entity.Visit;
-import cz.muni.fi.pa165.mushrooms.service.BeanMappingService;
-import cz.muni.fi.pa165.mushrooms.service.MushroomHunterService;
-import cz.muni.fi.pa165.mushrooms.service.VisitService;
+import cz.muni.fi.pa165.mushrooms.service.*;
 import cz.muni.fi.pa165.mushrooms.service.config.ServiceConfiguration;
 import mockit.Deencapsulation;
 import mockit.Delegate;
@@ -16,8 +14,6 @@ import mockit.Tested;
 import org.dozer.Mapper;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
@@ -31,11 +27,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 /**
- * Basic tests for facade implementations using a mock of the service layer.
+ * Basic tests for hunterFacade implementations using a mock of the service layer.
  *
  * @author bkompis
  */
-//TODO: ex throwing lower; DataAccessException (from facade impl)
+//TODO: ex throwing lower; DataAccessException (from hunterFacade impl)
 // TODO: constraints, exceptions in javadoc
 // TODO: equals()in DTOs vs. equals on all attributes
 // TODO: exception handling
@@ -68,16 +64,27 @@ public class withMock_VisitFacadeImplTest extends AbstractTransactionalJUnit4Spr
     private MushroomHunterService service;
 
     @Injectable
+    private ForestService forestService;
+
+    @Injectable
+    private MushroomService mushroomService;
+
+    @Injectable
     private VisitService visitService; // ak je ma sa injectnut
 
     @Inject @Tested // both annotations are necessary
     private Mapper dozer;
     @Inject @Tested
     private BeanMappingService mapping;
+
     @Tested(fullyInitialized = true)
-    private MushroomHunterFacadeImpl facade;
+    private MushroomHunterFacadeImpl hunterFacade;
+
     @Tested(fullyInitialized = true) // pouzivaj realnu impl tohoto
-    private VisitFacadeImpl facade2;
+    private VisitFacadeImpl visitFacade;
+
+    @Tested(fullyInitialized = true)
+    private ForestFacadeImpl forestFacade;
 
 
     private static MushroomHunter createMushroomHunter(String firstName, String surname, String userNickname) {
@@ -181,6 +188,13 @@ public class withMock_VisitFacadeImplTest extends AbstractTransactionalJUnit4Spr
                 // do nothing
             }; minTimes = 0;
 
+            forestService.createForest((Forest) any);
+            result = new Delegate() {
+                void foo(Forest forest){
+                    //no action performed
+                }
+            }; minTimes = 0;
+
             service.deleteHunter((MushroomHunter) any);
             result = new Delegate() {
                 void foo(){}
@@ -241,19 +255,30 @@ public class withMock_VisitFacadeImplTest extends AbstractTransactionalJUnit4Spr
 
     @Test
     public void findVisitById() {
-        assertThat(facade2.findById(1L)).isEqualToComparingFieldByField(visit1DTO);
-        assertThat(facade2.findById(2L)).isEqualToComparingFieldByField(visit2DTO);
-        assertThat(facade2.findById(3L)).isNull();
+        assertThat(visitFacade.findById(1L)).isEqualToComparingFieldByField(visit1DTO);
+        assertThat(visitFacade.findById(2L)).isEqualToComparingFieldByField(visit2DTO);
+        assertThat(visitFacade.findById(3L)).isNull();
     }
 
     @Test
     public void createVisit() { // maybe use BeanMappingService here
         VisitCreateDTO createDTO1 = new VisitCreateDTO();
+
+        forestFacade.createForest(forest1DTO);
+
+        MushroomHunterCreateDTO createDTO2 = new MushroomHunterCreateDTO();
+        createDTO2.setAdmin(hunter1.isAdmin());
+        createDTO2.setFirstName(hunter1.getFirstName());
+        createDTO2.setSurname(hunter1.getSurname());
+        createDTO2.setPersonalInfo(hunter1.getPersonalInfo());
+        createDTO2.setUserNickname(hunter1.getUserNickname());
+        createDTO2.setUnencryptedPassword("armor");
+
         createDTO1.setForest(forest1DTO);
         createDTO1.setHunter(hunter1DTO);
 
         System.err.println(forest1.getId() + " " + hunter1.getId());
 
-        assertThat(facade2.createVisit(createDTO1)).isEqualTo(visit1DTO);
+        assertThat(visitFacade.createVisit(createDTO1)).isEqualTo(visit1DTO);
     }
 }
