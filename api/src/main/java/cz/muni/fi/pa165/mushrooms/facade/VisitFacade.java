@@ -23,13 +23,13 @@ public interface VisitFacade {
     VisitDTO findById(Long id);
 
     /**
-     * Takes a Visit object to be deleted from the database.
+     * Takes a Visit object to be deleted from the database by it's id.
      *
-     * @param visit is a Visit object
+     * @param id is primary key for a Visit object
      * @throws IllegalArgumentException on null visit given as a parameter
      *      or if the visit given as a parameter doesn't exist in the database
      */
-    void deleteVisit(VisitDTO visit);
+    void deleteVisit(Long id);
 
     /**
      * Takes a Visit object to be updated in the database.
