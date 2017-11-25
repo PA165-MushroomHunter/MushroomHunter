@@ -24,6 +24,7 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import javax.inject.Inject;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,9 +42,9 @@ import static org.assertj.core.api.Assertions.*;
 // TODO: more tests, + tests without mock (integration)
 @ContextConfiguration(classes = ServiceConfiguration.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class) // TODO: necessary?
-public class VisitFacadeImplTest_withMock extends AbstractTransactionalJUnit4SpringContextTests { //should be transactional?
+public class withMock_VisitFacadeImplTest extends AbstractTransactionalJUnit4SpringContextTests { //should be transactional?
 
-    private final Logger logger = LoggerFactory.getLogger(MushroomHunterFacadeImplTest_withMock.class);
+    //private final Logger logger = LoggerFactory.getLogger(MushroomHunterFacadeImplTest_withMock.class);
 
     private MushroomHunter hunter1;
     private MushroomHunter hunter2;
@@ -67,14 +68,15 @@ public class VisitFacadeImplTest_withMock extends AbstractTransactionalJUnit4Spr
     private MushroomHunterService service;
 
     @Injectable
-    private VisitService visitService;
+    private VisitService visitService; // ak je ma sa injectnut
+
     @Inject @Tested // both annotations are necessary
     private Mapper dozer;
     @Inject @Tested
     private BeanMappingService mapping;
     @Tested(fullyInitialized = true)
     private MushroomHunterFacadeImpl facade;
-    @Tested(fullyInitialized = true)
+    @Tested(fullyInitialized = true) // pouzivaj realnu impl tohoto
     private VisitFacadeImpl facade2;
 
 
@@ -103,14 +105,32 @@ public class VisitFacadeImplTest_withMock extends AbstractTransactionalJUnit4Spr
         hunter2.setAdmin(true);
         hunter2DTO = mapping.mapTo(hunter2, MushroomHunterDTO.class);
 
+        forest1 = new Forest();
         forest1.setName("Listnany");
         Deencapsulation.setField(forest1, "id", 1L);
         forest1DTO = mapping.mapTo(forest1, ForestDTO.class);
 
+        forest2 = new Forest();
         forest2.setName("Ihlicnaty");
         Deencapsulation.setField(forest2, "id", 2L);
         forest2DTO = mapping.mapTo(forest2, ForestDTO.class);
 
+        visit1 = new Visit();
+        visit1.setDate(LocalDate.now());
+        visit1.setHunter(hunter1);
+        visit1.setForest(forest1);
+        Deencapsulation.setField(visit1, "id", 1L);
+        visit1DTO = mapping.mapTo(visit1, VisitDTO.class);
+
+        visit2 = new Visit();
+        visit2.setDate(LocalDate.now());
+        visit2.setHunter(hunter2);
+        visit2.setForest(forest2);
+        Deencapsulation.setField(visit2, "id", 2L);
+        visit2DTO = mapping.mapTo(visit2, VisitDTO.class);
+
+
+        // anonymna trieda?
 
         new Expectations(){{
             service.authenticate((MushroomHunter) any, anyString);
@@ -125,7 +145,6 @@ public class VisitFacadeImplTest_withMock extends AbstractTransactionalJUnit4Spr
                 MushroomHunter foo(Long id) {
                     System.err.println("looking for hunter with id " + id);
                     if (id.equals(1L)){
-                        System.err.println("returning hunter1");
                         return hunter1;
                     }
                     if (id.equals(2L)){
@@ -134,7 +153,28 @@ public class VisitFacadeImplTest_withMock extends AbstractTransactionalJUnit4Spr
                     return null;
                 }
             }; minTimes = 0;
+/*******************************************************************************/
+            visitService.findVisitById(anyLong);
+            result = new Delegate() {
+                Visit foo(Long id) {
+                    System.err.println("looking for visit with id " + id);
+                    if (id.equals(1L)){
+                        return visit1;
+                    }
+                    if (id.equals(2L)){
+                        return visit2;
+                    }
+                    return null;
+                }
+            }; minTimes = 0;
 
+            visitService.createVisit((Visit) any);
+            result = new Delegate(){
+                void foo (){
+                }
+            }; minTimes = 0;
+
+/*******************************************************************************/
             service.updateHunter((MushroomHunter) any);
             result = new Delegate(){
                 void foo(){}
@@ -201,8 +241,19 @@ public class VisitFacadeImplTest_withMock extends AbstractTransactionalJUnit4Spr
 
     @Test
     public void findVisitById() {
-            assertThat(facade2.findById(1L)).isEqualToComparingFieldByField(visit1DTO);
-            assertThat(facade2.findById(2L)).isEqualToComparingFieldByField(visit2DTO);
-            assertThat(facade2.findById(243L)).isNull();
+        assertThat(facade2.findById(1L)).isEqualToComparingFieldByField(visit1DTO);
+        assertThat(facade2.findById(2L)).isEqualToComparingFieldByField(visit2DTO);
+        assertThat(facade2.findById(3L)).isNull();
+    }
+
+    @Test
+    public void createVisit() { // maybe use BeanMappingService here
+        VisitCreateDTO createDTO1 = new VisitCreateDTO();
+        createDTO1.setForest(forest1DTO);
+        createDTO1.setHunter(hunter1DTO);
+
+        System.err.println(forest1.getId() + " " + hunter1.getId());
+
+        assertThat(facade2.createVisit(createDTO1)).isEqualTo(visit1DTO);
     }
 }

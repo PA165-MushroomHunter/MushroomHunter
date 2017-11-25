@@ -6,6 +6,8 @@ import cz.muni.fi.pa165.mushrooms.entity.Forest;
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
 import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
 import cz.muni.fi.pa165.mushrooms.entity.Visit;
+import org.springframework.stereotype.Service;
+
 import javax.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.util.List;
  *
  * @author Barbora Kompisova
  */
+@Service
 public class VisitServiceImpl implements VisitService {
 
     @Inject

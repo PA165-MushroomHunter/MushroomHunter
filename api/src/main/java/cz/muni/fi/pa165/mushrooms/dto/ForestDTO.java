@@ -45,12 +45,4 @@ public class ForestDTO {
         ForestDTO forestDTO = (ForestDTO) o;
         return Objects.equals(getName(), forestDTO.getName());
     }
-
-    @Override
-    public int hashCode() {
-        int result = getId().hashCode();
-        result = 31 * result + getDescription().hashCode();
-        result = 31 * result + getName().hashCode();
-        return result;
-    }
 }

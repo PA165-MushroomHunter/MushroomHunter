@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.mushrooms.facade;
 
 import cz.muni.fi.pa165.mushrooms.dto.ForestDTO;
 import cz.muni.fi.pa165.mushrooms.dto.MushroomHunterDTO;
+import cz.muni.fi.pa165.mushrooms.dto.VisitCreateDTO;
 import cz.muni.fi.pa165.mushrooms.dto.VisitDTO;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public interface VisitFacade {
      * @param visit is a Visit object
      * @throws IllegalArgumentException on null visit given as a parameter
      */
-    void createVisit(VisitDTO visit);
+    VisitDTO createVisit(VisitCreateDTO visit);
 
     /**
      * Takes an object of type Forest and returns list of visits carried out in this forest.
