@@ -5,6 +5,7 @@ import cz.muni.fi.pa165.mushrooms.dao.ForestDao;
 import cz.muni.fi.pa165.mushrooms.dto.ForestDTO;
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
+import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
  *
  * @author bencikpeter
  */
+@Service
 public class ForestServiceImpl implements ForestService {
 
     @Inject

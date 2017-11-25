@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.mushrooms.service;
 
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 

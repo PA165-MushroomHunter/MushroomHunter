@@ -8,6 +8,8 @@ import cz.muni.fi.pa165.mushrooms.facade.ForestFacade;
 import cz.muni.fi.pa165.mushrooms.service.BeanMappingService;
 import cz.muni.fi.pa165.mushrooms.service.ForestService;
 import cz.muni.fi.pa165.mushrooms.service.MushroomService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -17,6 +19,8 @@ import java.util.List;
  *
  * @author bencikpeter
  */
+@Transactional
+@Service
 public class ForestFacadeImpl implements ForestFacade {
 
     @Inject
@@ -82,6 +86,7 @@ public class ForestFacadeImpl implements ForestFacade {
         newForest.setDescription(forest.getDescription());
 
         service.createForest(newForest);
+        forest.setId(newForest.getId());
     }
 
     @Override
