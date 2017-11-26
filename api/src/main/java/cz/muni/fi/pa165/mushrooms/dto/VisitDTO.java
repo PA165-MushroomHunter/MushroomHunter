@@ -1,13 +1,12 @@
 package cz.muni.fi.pa165.mushrooms.dto;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * TODO: create  javadoc
  *
- * @author Barbora Kompisova,Buvko
+ * @author bkompis,Buvko
  */
 public class VisitDTO {
     private Long id;

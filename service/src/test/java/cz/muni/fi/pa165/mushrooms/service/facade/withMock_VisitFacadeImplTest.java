@@ -6,7 +6,11 @@ import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
 import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
 import cz.muni.fi.pa165.mushrooms.entity.Visit;
 import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
-import cz.muni.fi.pa165.mushrooms.service.*;
+import cz.muni.fi.pa165.mushrooms.service.BeanMappingService;
+import cz.muni.fi.pa165.mushrooms.service.ForestService;
+import cz.muni.fi.pa165.mushrooms.service.MushroomHunterService;
+import cz.muni.fi.pa165.mushrooms.service.MushroomService;
+import cz.muni.fi.pa165.mushrooms.service.VisitService;
 import cz.muni.fi.pa165.mushrooms.service.config.ServiceConfiguration;
 import mockit.Deencapsulation;
 import mockit.Delegate;
@@ -69,31 +73,15 @@ public class withMock_VisitFacadeImplTest extends AbstractTransactionalJUnit4Spr
     private VisitDTO visit2DTO;
 
     @Injectable
-    private MushroomHunterService service;
+    private VisitService visitService;
 
-    @Injectable
-    private ForestService forestService;
-
-    @Injectable
-    private MushroomService mushroomService;
-
-    @Injectable
-    private VisitService visitService; // ak je ma sa injectnut
-
-    @Inject @Tested // both annotations are necessary
+    @Inject @Tested
     private Mapper dozer;
     @Inject @Tested
     private BeanMappingService mapping;
 
     @Tested(fullyInitialized = true)
-    private MushroomHunterFacadeImpl hunterFacade;
-
-    @Tested(fullyInitialized = true) // pouzivaj realnu impl tohoto
     private VisitFacadeImpl visitFacade;
-
-    @Tested(fullyInitialized = true)
-    private ForestFacadeImpl forestFacade;
-
 
     private static MushroomHunter createMushroomHunter(String firstName, String surname, String userNickname) {
         MushroomHunter hunter = new MushroomHunter();

@@ -15,8 +15,6 @@ import javax.inject.Inject;
 import java.util.List;
 
 /**
- * TODO: create  javadoc
- *
  * @author Buvko
  */
 @Transactional
@@ -33,7 +31,6 @@ public class VisitFacadeImpl implements VisitFacade {
     @Override
     public VisitDTO findById(Long id) {
         Visit visit = service.findVisitById(id);
-        System.err.println("service found for id=" + id + " visit " + id);
         if (visit == null){
             return null;
         }
@@ -56,6 +53,7 @@ public class VisitFacadeImpl implements VisitFacade {
         List<Mushroom> mushrooms = beanMappingService.mapTo(visit.getMushrooms(), Mushroom.class);
 
         Visit newVisit = new Visit();
+        newVisit.setDate(visit.getDate());
         newVisit.setForest(forest);
         newVisit.setHunter(hunter);
         newVisit.setMushrooms(mushrooms);
@@ -93,7 +91,9 @@ public class VisitFacadeImpl implements VisitFacade {
             //TODO: react to it somehow
         }
 
+
         entityVisit.setHunter(hunter);
+        //entityVisit.setDate(visit.getDate());
         entityVisit.setForest(forest);
         entityVisit.setNote(visit.getNote());
         entityVisit.setMushrooms(mushrooms);

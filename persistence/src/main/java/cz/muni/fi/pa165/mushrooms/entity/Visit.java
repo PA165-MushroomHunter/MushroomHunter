@@ -1,12 +1,20 @@
 package cz.muni.fi.pa165.mushrooms.entity;
 
-import com.sun.javafx.UnmodifiableArrayList;
 import cz.muni.fi.pa165.mushrooms.utils.LocalDateAttributeConverter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,7 +39,7 @@ public class Visit {
     @JoinColumn(name = "visit_forest", nullable = false)
     private Forest forest;
 
-    @ManyToMany
+    @OneToMany
     @JoinColumn(name = "visit_mushroom", nullable = true)
     private List<Mushroom> mushrooms;
 
