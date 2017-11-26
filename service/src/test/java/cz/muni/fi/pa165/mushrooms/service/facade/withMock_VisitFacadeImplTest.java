@@ -2,8 +2,10 @@ package cz.muni.fi.pa165.mushrooms.service.facade;
 
 import cz.muni.fi.pa165.mushrooms.dto.*;
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
+import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
 import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
 import cz.muni.fi.pa165.mushrooms.entity.Visit;
+import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
 import cz.muni.fi.pa165.mushrooms.service.*;
 import cz.muni.fi.pa165.mushrooms.service.config.ServiceConfiguration;
 import mockit.Deencapsulation;
@@ -53,6 +55,12 @@ public class withMock_VisitFacadeImplTest extends AbstractTransactionalJUnit4Spr
 
     private ForestDTO forest1DTO;
     private ForestDTO forest2DTO;
+
+    private Mushroom mushroom1;
+    private Mushroom mushroom2;
+
+    private MushroomDTO mushroom1DTO;
+    private MushroomDTO mushroom2DTO;
 
     private Visit visit1;
     private Visit visit2;
@@ -113,7 +121,7 @@ public class withMock_VisitFacadeImplTest extends AbstractTransactionalJUnit4Spr
         hunter2DTO = mapping.mapTo(hunter2, MushroomHunterDTO.class);
 
         forest1 = new Forest();
-        forest1.setName("Listnany");
+        forest1.setName("Listnaty");
         Deencapsulation.setField(forest1, "id", 1L);
         forest1DTO = mapping.mapTo(forest1, ForestDTO.class);
 
@@ -122,10 +130,25 @@ public class withMock_VisitFacadeImplTest extends AbstractTransactionalJUnit4Spr
         Deencapsulation.setField(forest2, "id", 2L);
         forest2DTO = mapping.mapTo(forest2, ForestDTO.class);
 
+        mushroom1 = new Mushroom();
+        mushroom1.setName("Hrib Dubovy");
+        mushroom1.setType(MushroomType.EDIBLE);
+        mushroom1.setIntervalOfOccurrence("June","July");
+        Deencapsulation.setField(mushroom1, "id", 1L);
+        mushroom1DTO = mapping.mapTo(mushroom1, MushroomDTO.class);
+
+        mushroom2 = new Mushroom();
+        mushroom2.setName("Hrib Satan");
+        mushroom2.setType(MushroomType.POISONOUS);
+        mushroom2.setIntervalOfOccurrence("July","September");
+        Deencapsulation.setField(mushroom2, "id", 2L);
+        mushroom2DTO = mapping.mapTo(mushroom2, MushroomDTO.class);
+
         visit1 = new Visit();
         visit1.setDate(LocalDate.now());
         visit1.setHunter(hunter1);
         visit1.setForest(forest1);
+        visit1.setMushrooms(new ArrayList<Mushroom>());
         Deencapsulation.setField(visit1, "id", 1L);
         visit1DTO = mapping.mapTo(visit1, VisitDTO.class);
 
@@ -136,31 +159,7 @@ public class withMock_VisitFacadeImplTest extends AbstractTransactionalJUnit4Spr
         Deencapsulation.setField(visit2, "id", 2L);
         visit2DTO = mapping.mapTo(visit2, VisitDTO.class);
 
-
-        // anonymna trieda?
-
         new Expectations(){{
-            service.authenticate((MushroomHunter) any, anyString);
-            result = new Delegate() {
-                boolean foo(MushroomHunter hunter, String pass) {
-                    return hunter != null && pass != null && hunter.getPasswordHash().equals(pass);
-                }
-            }; minTimes = 0;
-
-            service.findHunterById(anyLong);
-            result = new Delegate() {
-                MushroomHunter foo(Long id) {
-                    System.err.println("looking for hunter with id " + id);
-                    if (id.equals(1L)){
-                        return hunter1;
-                    }
-                    if (id.equals(2L)){
-                        return hunter2;
-                    }
-                    return null;
-                }
-            }; minTimes = 0;
-/*******************************************************************************/
             visitService.findVisitById(anyLong);
             result = new Delegate() {
                 Visit foo(Long id) {
@@ -181,76 +180,101 @@ public class withMock_VisitFacadeImplTest extends AbstractTransactionalJUnit4Spr
                 }
             }; minTimes = 0;
 
-/*******************************************************************************/
-            service.updateHunter((MushroomHunter) any);
-            result = new Delegate(){
-                void foo(){}
-                // do nothing
-            }; minTimes = 0;
-
-            forestService.createForest((Forest) any);
-            result = new Delegate() {
-                void foo(Forest forest){
-                    //no action performed
-                }
-            }; minTimes = 0;
-
-            service.deleteHunter((MushroomHunter) any);
+            visitService.deleteVisit((Visit) any);
             result = new Delegate() {
                 void foo(){}
                 // do nothing
             }; minTimes = 0;
 
-            service.findAllHunters();
+            visitService.updateVisit((Visit) any);
+            result = new Delegate() {
+                void foo(){}
+                // do nothing
+            }; minTimes = 0;
+
+            visitService.findAllVisits();
             result = new Delegate(){
-                List<MushroomHunter> foo(){
-                    List<MushroomHunter> res = new ArrayList<>();
-                    res.add(hunter1);
-                    res.add(hunter2);
+                List<Visit> foo(){
+                    List<Visit> res = new ArrayList<>();
+                    res.add(visit1);
+                    res.add(visit2);
                     return res;
                 }
             }; minTimes = 0;
 
-            service.findHunterByNickname(anyString);
+            visitService.getVisitsByHunter((MushroomHunter) any);
             result = new Delegate() {
-                MushroomHunter foo(String nickname){
-                    switch (nickname){
-                        case "theGoodGuy":
-                            return hunter1;
-                        case "fullmetal":
-                            return hunter2;
-                        default:
-                            return null;
+                List<Visit> foo(MushroomHunter hunter){
+                    if (hunter.getUserNickname().equals("theGoodGuy")){
+                        List<Visit> visitsByHunter1 =  new ArrayList<>();
+                        visitsByHunter1.add(visit1);
+                        return visitsByHunter1;
                     }
-                }
-            }; minTimes = 0;
-
-            service.isAdmin((MushroomHunter) any);
-            result = new Delegate(){
-                boolean foo(MushroomHunter hunter) {
-                    return hunter != null && hunter.isAdmin();
-                }
-            }; minTimes = 0;
-
-            service.registerHunter((MushroomHunter) any, anyString);
-            result = new Delegate(){
-                void foo (MushroomHunter hunter, String password){
-                    hunter.setPasswordHash(password);
-                }
-            }; minTimes = 0;
-
-            service.updatePassword((MushroomHunter) any, anyString, anyString);
-            result = new Delegate(){
-                boolean foo(MushroomHunter hunter, String oldPassword, String newPassword) {
-                    if (!oldPassword.equals(hunter.getPasswordHash())) {
-                        return false;
+                    else if (hunter.getUserNickname().equals("fullmetal")){
+                        List<Visit> visitsByHunter2 =  new ArrayList<>();
+                        visitsByHunter2.add(visit2);
+                        return visitsByHunter2;
                     }
-                    hunter.setPasswordHash(newPassword);
-                    return true;
+                    else
+                        return null;
+                }
+            }; minTimes = 0;
+
+            visitService.getVisitsByForest((Forest) any);
+            result = new Delegate() {
+                List<Visit> foo(Forest forest){
+                    if (forest.getName().equals("Listnaty")){
+                        List<Visit> visitsByForest1 =  new ArrayList<>();
+                        visitsByForest1.add(visit1);
+                        return visitsByForest1;
+                    }
+                    else if (forest.getName().equals("Ihlicnaty")){
+                        List<Visit> visitsByForest2 =  new ArrayList<>();
+                        visitsByForest2.add(visit2);
+                        return visitsByForest2;
+                    }
+                    else
+                        return null;
+                }
+            }; minTimes = 0;
+
+            visitService.getVisitsByMushroom((Mushroom) any);
+            result = new Delegate() {
+                List<Visit> foo(Mushroom mushroom){
+                    if (mushroom.getName().equals("Hrib Dubovy")){
+                        List<Visit> visitsByHunter1 =  new ArrayList<>();
+                        visitsByHunter1.add(visit1);
+                        return visitsByHunter1;
+                    }
+                    else if (mushroom.getName().equals("Hrib Satan")){
+                        List<Visit> visitsByHunter2 =  new ArrayList<>();
+                        visitsByHunter2.add(visit2);
+                        return visitsByHunter2;
+                    }
+                    else
+                        return null;
                 }
             }; minTimes = 0;
 
         }};
+    }
+
+    @Test
+    public void findVisitsByHunter() {
+        assertThat(visitFacade.listAllVisitsForMushroomHunter(hunter1DTO)).containsExactlyInAnyOrder(visit1DTO);
+        assertThat(visitFacade.listAllVisitsForMushroomHunter(hunter2DTO)).containsExactlyInAnyOrder(visit2DTO);
+    }
+
+    @Test
+    public void findVisitsByForest() {
+        assertThat(visitFacade.listAllVisitsForForest(forest1DTO)).containsExactlyInAnyOrder(visit1DTO);
+        assertThat(visitFacade.listAllVisitsForForest(forest2DTO)).containsExactlyInAnyOrder(visit2DTO);
+    }
+
+    @Test
+    public void findVisitsByMushroom() {
+        assertThat(visitFacade.listAllVisitsByMushroom(mushroom1DTO)).containsExactlyInAnyOrder(visit1DTO);
+        assertThat(visitFacade.listAllVisitsByMushroom(mushroom2DTO)).containsExactlyInAnyOrder(visit2DTO);
     }
 
     @Test
@@ -261,24 +285,22 @@ public class withMock_VisitFacadeImplTest extends AbstractTransactionalJUnit4Spr
     }
 
     @Test
-    public void createVisit() { // maybe use BeanMappingService here
-        VisitCreateDTO createDTO1 = new VisitCreateDTO();
+    public void findAllVisits() {
+        assertThat(visitFacade.listAllVisits()).containsExactlyInAnyOrder(visit1DTO,visit2DTO);
+    }
 
-        forestFacade.createForest(forest1DTO);
+    @Test
+    public void deleteVisit() {
+        assertThatThrownBy(() -> visitFacade.deleteVisit(null)).isInstanceOf(IllegalArgumentException.class);
+    }
 
-        MushroomHunterCreateDTO createDTO2 = new MushroomHunterCreateDTO();
-        createDTO2.setAdmin(hunter1.isAdmin());
-        createDTO2.setFirstName(hunter1.getFirstName());
-        createDTO2.setSurname(hunter1.getSurname());
-        createDTO2.setPersonalInfo(hunter1.getPersonalInfo());
-        createDTO2.setUserNickname(hunter1.getUserNickname());
-        createDTO2.setUnencryptedPassword("armor");
+    @Test
+    public void updateVisit() {
+        assertThatThrownBy(() -> visitFacade.updateVisit(null)).isInstanceOf(IllegalArgumentException.class);
+    }
 
-        createDTO1.setForest(forest1DTO);
-        createDTO1.setHunter(hunter1DTO);
-
-        System.err.println(forest1.getId() + " " + hunter1.getId());
-
-        assertThat(visitFacade.createVisit(createDTO1)).isEqualTo(visit1DTO);
+    @Test
+    public void createVisit() {
+        assertThatThrownBy(() -> visitFacade.createVisit(null)).isInstanceOf(IllegalArgumentException.class);
     }
 }

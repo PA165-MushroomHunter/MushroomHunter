@@ -1,13 +1,23 @@
 package cz.muni.fi.pa165.mushrooms.dto;
 
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.List;
+
 /**
- * Created by Matúš on 25.11.2017.
+ * TODO: create  javadoc
+ *
+ * @author Buvko
  */
 public class VisitCreateDTO {
+    @NotNull
     private MushroomHunterDTO hunter;
+    @NotNull
     private ForestDTO forest;
-    //private LocalDate date;
+    private LocalDate date;
     private String note;
+
+    private List<MushroomDTO> mushrooms;
 
     public MushroomHunterDTO getHunter() {
         return hunter;
@@ -33,23 +43,11 @@ public class VisitCreateDTO {
         this.note = note;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof VisitCreateDTO)) return false;
-
-        VisitCreateDTO that = (VisitCreateDTO) o;
-
-        if (!getHunter().equals(that.getHunter())) return false;
-        if (!getForest().equals(that.getForest())) return false;
-        return getNote() != null ? getNote().equals(that.getNote()) : that.getNote() == null;
+    public List<MushroomDTO> getMushrooms() {
+        return mushrooms;
     }
 
-    @Override
-    public int hashCode() {
-        int result = getHunter().hashCode();
-        result = 31 * result + getForest().hashCode();
-        result = 31 * result + (getNote() != null ? getNote().hashCode() : 0);
-        return result;
+    public void setMushrooms(List<MushroomDTO> mushrooms) {
+        this.mushrooms = mushrooms;
     }
 }

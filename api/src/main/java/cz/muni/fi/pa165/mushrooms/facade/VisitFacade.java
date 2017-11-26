@@ -1,9 +1,6 @@
 package cz.muni.fi.pa165.mushrooms.facade;
 
-import cz.muni.fi.pa165.mushrooms.dto.ForestDTO;
-import cz.muni.fi.pa165.mushrooms.dto.MushroomHunterDTO;
-import cz.muni.fi.pa165.mushrooms.dto.VisitCreateDTO;
-import cz.muni.fi.pa165.mushrooms.dto.VisitDTO;
+import cz.muni.fi.pa165.mushrooms.dto.*;
 
 import java.util.List;
 
@@ -22,6 +19,13 @@ public interface VisitFacade {
      * @throws IllegalArgumentException on null id given as a parameter
      */
     VisitDTO findById(Long id);
+
+    /**
+     * Returns list of all visits.
+     *
+     * @return List of all visits
+     */
+    List<VisitDTO> listAllVisits();
 
     /**
      * Takes a Visit object to be deleted from the database by it's id.
@@ -72,6 +76,6 @@ public interface VisitFacade {
     List<VisitDTO> listAllVisitsForMushroomHunter(MushroomHunterDTO mushroomHunter);
 
 
-    //List<VisitDTO> listAllVisitsByMushroom(MushroomDTO mushroom);
+    List<VisitDTO> listAllVisitsByMushroom(MushroomDTO mushroom);
 
 }

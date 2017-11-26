@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * TODO: create  javadoc
  *
- * @author Barbora Kompisova
+ * @author Buvko
  */
 public interface VisitService {
     Visit findVisitById(Long id);

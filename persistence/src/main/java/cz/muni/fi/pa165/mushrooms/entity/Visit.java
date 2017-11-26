@@ -1,19 +1,13 @@
 package cz.muni.fi.pa165.mushrooms.entity;
 
+import com.sun.javafx.UnmodifiableArrayList;
 import cz.muni.fi.pa165.mushrooms.utils.LocalDateAttributeConverter;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -36,6 +30,10 @@ public class Visit {
     @ManyToOne
     @JoinColumn(name = "visit_forest", nullable = false)
     private Forest forest;
+
+    @ManyToMany
+    @JoinColumn(name = "visit_mushroom", nullable = true)
+    private List<Mushroom> mushrooms;
 
     @NotNull
     @Column(nullable = false)
@@ -68,6 +66,10 @@ public class Visit {
         return note;
     }
 
+    public List<Mushroom> getMushrooms() {
+        return mushrooms;
+    }
+
     //setters
     public void setId(Long id) {
         this.id = id;
@@ -89,21 +91,12 @@ public class Visit {
         this.note = note;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null) {
-            return false;
-        }
-        if (!(o instanceof Visit)) {
-            return false;
-        }
-        Visit visit = (Visit) o;
-        return Objects.equals(getHunter(), visit.getHunter()) &&
-                Objects.equals(getForest(), visit.getForest()) &&
-                Objects.equals(getDate(), visit.getDate());
+    public void setMushrooms(List<Mushroom> mushrooms) {
+        this.mushrooms = mushrooms;
+    }
+
+    public void addMushroom(Mushroom mushroom) {
+        this.mushrooms.add(mushroom);
     }
 
     @Override
@@ -112,11 +105,26 @@ public class Visit {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Visit)) return false;
+
+        Visit visit = (Visit) o;
+
+        if (!getHunter().equals(visit.getHunter())) return false;
+        if (!getForest().equals(visit.getForest())) return false;
+        if (getMushrooms() != null ? !getMushrooms().equals(visit.getMushrooms()) : visit.getMushrooms() != null)
+            return false;
+        if (!getDate().equals(visit.getDate())) return false;
+        return getNote() != null ? getNote().equals(visit.getNote()) : visit.getNote() == null;
+    }
+
+    @Override
     public String toString() {
         return "Visit{" +
-                "id=" + id +
-                ", hunter=" + hunter +
+                "hunter=" + hunter +
                 ", forest=" + forest +
+                ", mushrooms=" + mushrooms +
                 ", date=" + date +
                 ", note='" + note + '\'' +
                 '}';

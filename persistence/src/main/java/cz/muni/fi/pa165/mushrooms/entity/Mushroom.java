@@ -79,16 +79,24 @@ public class Mushroom {
                 '}';
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || !(o instanceof Mushroom)) return false;
+        if (!(o instanceof Mushroom)) return false;
+
         Mushroom mushroom = (Mushroom) o;
-        return Objects.equals(getName(), mushroom.getName());
+
+        if (!getName().equals(mushroom.getName())) return false;
+        if (getType() != mushroom.getType()) return false;
+        return getIntervalOfOccurrence().equals(mushroom.getIntervalOfOccurrence());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName());
+        int result = getName().hashCode();
+        result = 31 * result + getType().hashCode();
+        result = 31 * result + getIntervalOfOccurrence().hashCode();
+        return result;
     }
 }

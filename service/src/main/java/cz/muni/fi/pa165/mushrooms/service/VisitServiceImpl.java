@@ -22,9 +22,6 @@ import java.util.List;
 public class VisitServiceImpl implements VisitService {
 
     @Inject
-    private MushroomHunterDao mushroomHunterDao;
-
-    @Inject
     private VisitDao visitDao;
 
     @Override
@@ -72,12 +69,34 @@ public class VisitServiceImpl implements VisitService {
 
     @Override
     public List<Visit> getVisitsByForest(Forest forest) {
-        return null;
+
+        List<Visit> visitsByForest = new ArrayList<>();
+        List<Visit> visits = visitDao.findAll();
+
+        for (Visit v: visits) {
+            if (v.getForest().equals(forest)){
+                visitsByForest.add(v);
+            }
+        }
+        return visitsByForest;
     }
 
     @Override
     public List<Visit> getVisitsByMushroom(Mushroom mushroom) {
-        return null;
+
+        List<Visit> visitsByMushroom = new ArrayList<>();
+        List<Visit> visits = visitDao.findAll();
+        List<Mushroom> mushrooms;
+
+        for (Visit v: visits) {
+            mushrooms = v.getMushrooms();
+            for (Mushroom m : mushrooms) {
+                if (m.equals(mushroom)){
+                    visitsByMushroom.add(v);
+                }
+            }
+        }
+        return visitsByMushroom;
     }
 
 }

@@ -8,8 +8,6 @@ import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
  * @author Buvko
  */
 public class MushroomDTO {
-
-
     private Long id;
     private String name;
     private MushroomType type;
