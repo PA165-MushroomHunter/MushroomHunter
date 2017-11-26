@@ -48,18 +48,30 @@ public class MushroomFacadeImpl implements MushroomFacade {
 
     @Override
     public List<MushroomDTO> findByMushroomType(MushroomType mushroomType) {
+        if (mushroomType == null) {
+            throw new IllegalArgumentException("No mushroom type at finding mushroom by type.");
+        }
         List<Mushroom> mushrooms = service.findByMushroomType(mushroomType);
         return beanMappingService.mapTo(mushrooms, MushroomDTO.class);
     }
 
     @Override
     public List<MushroomDTO> findByIntervalOfOccurrence(String fromMonth, String toMonth) {   ////// TODO String - Date
+        if (fromMonth == null) {
+            throw new IllegalArgumentException("Parameter fromMonth is null");
+        }
+        if (toMonth == null) {
+            throw new IllegalArgumentException("Parameter toMonth is null");
+        }
         List<Mushroom> mushrooms = service.findByIntervalOfOccurrence(fromMonth, toMonth);
         return beanMappingService.mapTo(mushrooms, MushroomDTO.class);
     }
 
     @Override
     public MushroomDTO createMushroom(MushroomDTO mushroom) {
+        if (mushroom == null) {
+            throw new IllegalArgumentException("No mushroom at mushroom create.");
+        }
         Mushroom mappedMushroom = beanMappingService.mapTo(mushroom, Mushroom.class);
         //set mushroom
         mappedMushroom.setName(mushroom.getName());
@@ -83,6 +95,9 @@ public class MushroomFacadeImpl implements MushroomFacade {
 
     @Override
     public MushroomDTO updateMushroom(MushroomDTO mushroom) {
+        if (mushroom == null) {
+            throw new IllegalArgumentException("No mushroom at mushroom update.");
+        }
         Mushroom entity = service.findMushroomById(mushroom.getId());
         entity.setName(mushroom.getName());
         entity.setType(mushroom.getType());
