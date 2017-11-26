@@ -73,9 +73,6 @@ public class MushroomFacadeImpl implements MushroomFacade {
 
     @Override   //InvocationTargetException
     public boolean deleteMushroom(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("Null id at mushroom delete.");
-        }
         Mushroom mushroom = beanMappingService.mapTo(findMushroomById(id), Mushroom.class);
         service.deleteMushroom(mushroom);
         return true;

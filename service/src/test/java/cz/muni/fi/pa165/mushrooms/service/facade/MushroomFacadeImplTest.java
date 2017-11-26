@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.mushrooms.service.facade;
 
+import cz.muni.fi.pa165.mushrooms.service.TestUtils;
 import cz.muni.fi.pa165.mushrooms.dto.MushroomDTO;
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
 import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
@@ -42,21 +43,13 @@ public class MushroomFacadeImplTest extends AbstractTransactionalJUnit4SpringCon
     private MushroomDTO mushroom1DTO;
     private MushroomDTO mushroom2DTO;
 
-    private static Mushroom createMushroom(String name, MushroomType type, String from, String to) {
-        Mushroom mushroom = new Mushroom();
-        mushroom.setName(name);
-        mushroom.setType(type);
-        mushroom.setIntervalOfOccurrence(from, to);
-        return mushroom;
-    }
-
     @Before
     public void setUp() {
-        mushroom1 = createMushroom("toadstool", MushroomType.POISONOUS, "April", "September");
+        mushroom1 = TestUtils.createMushroom("toadstool", MushroomType.POISONOUS, "April", "September");
         service.createMushroom(mushroom1);
         assertNotNull(mushroom1.getId());
 
-        mushroom2 = createMushroom("puffball", MushroomType.EDIBLE, "June", "August");
+        mushroom2 = TestUtils.createMushroom("puffball", MushroomType.EDIBLE, "June", "August");
         service.createMushroom(mushroom2);
         assertNotNull(mushroom2.getId());
 
@@ -92,13 +85,13 @@ public class MushroomFacadeImplTest extends AbstractTransactionalJUnit4SpringCon
         assertThat(facade.findByMushroomType(MushroomType.UNEDIBLE)).isEmpty();
     }
 
-//    @Test
-//    public void findByIntervalOfOccurrence(){       /////// TODO String - Date
-//        assertThat(facade.findByIntervalOfOccurrence("April", "April")).containsExactly(mushroom1DTO);
-//        assertThat(facade.findByIntervalOfOccurrence("August", "August"))
-//                .containsExactlyInAnyOrder(mushroom1DTO, mushroom2DTO);
-//        assertThat(facade.findByIntervalOfOccurrence("January", "March")).isEmpty();
-//    }
+    @Test
+    public void findByIntervalOfOccurrence(){       /////// TODO String - Date
+        assertThat(facade.findByIntervalOfOccurrence("April", "April")).containsExactly(mushroom1DTO);
+        assertThat(facade.findByIntervalOfOccurrence("August", "August"))
+                .containsExactlyInAnyOrder(mushroom1DTO, mushroom2DTO);
+        assertThat(facade.findByIntervalOfOccurrence("January", "March")).isEmpty();
+    }
 
     @Test
     public void createMushroom() {

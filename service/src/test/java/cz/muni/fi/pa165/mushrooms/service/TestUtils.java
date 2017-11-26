@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author bkompis
  */
-class TestUtils {
+public class TestUtils {
 
     public static void validateForest(Forest forest) {
         if (forest == null) throw new IllegalArgumentException("null");
