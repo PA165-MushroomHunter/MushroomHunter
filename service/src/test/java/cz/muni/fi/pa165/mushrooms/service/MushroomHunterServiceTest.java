@@ -3,15 +3,11 @@ package cz.muni.fi.pa165.mushrooms.service;
 import cz.muni.fi.pa165.mushrooms.dao.MushroomHunterDao;
 import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
 import cz.muni.fi.pa165.mushrooms.service.config.ServiceConfiguration;
-import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityFindServiceException;
-import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityOperationServiceException;
-import cz.muni.fi.pa165.mushrooms.validation.PersistenceSampleApplicationContext;
 import mockit.Delegate;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
@@ -21,9 +17,10 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 
 import java.util.*;
 
-import static cz.muni.fi.pa165.mushrooms.service.TestUtils.*;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static cz.muni.fi.pa165.mushrooms.service.TestUtils.checkMushroomHunterDuplicity;
+import static cz.muni.fi.pa165.mushrooms.service.TestUtils.createHunter;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Test class for MushroomHunterService
