@@ -382,13 +382,13 @@ public class ForestServiceImplTest {
     public void findAllForestsWithMushroom_valid(){
         List<Map.Entry<Forest,Integer>> orderedList = service.findAllForestsWithMushroom(shroom);
         assertThat(orderedList).hasSize(3); //cannot check for elements directly - Map.Entry cannot be instantiated
-        assertThat(orderedList.get(0).getKey()).isEqualTo(forest3);
+        assertThat(orderedList.get(0).getKey()).isEqualTo(forest1);
         assertThat(orderedList.get(1).getKey()).isEqualTo(forest2);
-        assertThat(orderedList.get(2).getKey()).isEqualTo(forest1);
+        assertThat(orderedList.get(2).getKey()).isEqualTo(forest3);
 
-        assertThat(orderedList.get(0).getValue()).isEqualTo(1);
+        assertThat(orderedList.get(0).getValue()).isEqualTo(3);
         assertThat(orderedList.get(1).getValue()).isEqualTo(2);
-        assertThat(orderedList.get(2).getValue()).isEqualTo(3);
+        assertThat(orderedList.get(2).getValue()).isEqualTo(1);
     }
 
     @Test

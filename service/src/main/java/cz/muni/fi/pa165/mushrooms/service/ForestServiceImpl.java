@@ -1,6 +1,7 @@
 package cz.muni.fi.pa165.mushrooms.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -134,6 +135,7 @@ public class ForestServiceImpl implements ForestService {
             sortedForests.add(entry);
         }
 
+        Collections.reverse(sortedForests);
         return sortedForests;
     }
 
