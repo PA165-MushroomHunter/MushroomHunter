@@ -8,11 +8,13 @@ import cz.muni.fi.pa165.mushrooms.entity.Visit;
 import cz.muni.fi.pa165.mushrooms.facade.VisitFacade;
 import cz.muni.fi.pa165.mushrooms.service.BeanMappingService;
 import cz.muni.fi.pa165.mushrooms.service.VisitService;
+import cz.muni.fi.pa165.mushrooms.service.exceptions.VisitServiceDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 /**
@@ -55,15 +57,19 @@ public class VisitFacadeImpl implements VisitFacade {
 
         Visit newVisit = new Visit();
 
-        newVisit.setDate(LocalDate.parse(visit.getDate()));
+        try {
+            newVisit.setDate(LocalDate.parse(visit.getDate()));
+        } catch (DateTimeParseException e){
+            throw new IllegalArgumentException("Visit date has to be in format of YYYY-MM-DD");
+        }
         newVisit.setForest(forest);
         newVisit.setHunter(hunter);
         newVisit.setMushrooms(mushrooms);
         newVisit.setNote(visit.getNote());
 
         service.createVisit(newVisit);
-        // TODO: return proper object
-        return null;
+
+        return beanMappingService.mapTo(newVisit, VisitDTO.class);
     }
 
     @Override
@@ -72,6 +78,7 @@ public class VisitFacadeImpl implements VisitFacade {
             throw new IllegalArgumentException("Null id at visit delete.");
         }
         Visit visit = service.findVisitById(id);
+
         service.deleteVisit(visit);
     }
 
@@ -90,11 +97,15 @@ public class VisitFacadeImpl implements VisitFacade {
 
         Visit entityVisit = service.findVisitById(visit.getId());
         if (entityVisit == null) {
-            //TODO: react to it somehow
+            throw new VisitServiceDataAccessException("Given visit for update not found.");
         }
 
+        try {
+            entityVisit.setDate(LocalDate.parse(visit.getDate()));
+        } catch (DateTimeParseException e){
+            throw new IllegalArgumentException("Visit date has to be in format of YYYY-MM-DD");
+        }
         entityVisit.setHunter(hunter);
-        entityVisit.setDate(LocalDate.parse(visit.getDate()));
         entityVisit.setForest(forest);
         entityVisit.setNote(visit.getNote());
         entityVisit.setMushrooms(mushrooms);
