@@ -1,6 +1,5 @@
 package cz.muni.fi.pa165.mushrooms.service;
 
-import com.sun.org.apache.bcel.internal.generic.MULTIANEWARRAY;
 import cz.muni.fi.pa165.mushrooms.dao.MushroomDao;
 import cz.muni.fi.pa165.mushrooms.dao.VisitDao;
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
@@ -18,8 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 /**
  * Tests for service layer related to Mushroom entity
+ * Not much to test here actually, service is just relaying to DAO layer
+ *
+ * @author bencikpeter
  */
 
 public class MushroomServiceImplTest {
@@ -96,6 +101,7 @@ public class MushroomServiceImplTest {
         }
 
         public Mushroom findByName(String name) {
+            if (name == null) throw new IllegalArgumentException("Name is null");
             List<Mushroom> typedList = new ArrayList<>();
             List<Mushroom> dumpedDatabase = Collections.unmodifiableList(new ArrayList<>(database.values()));
             for (Mushroom m : dumpedDatabase) {
@@ -107,10 +113,25 @@ public class MushroomServiceImplTest {
     }
 
     MockDatabase database;
+    Mushroom mushroom1, mushroom2, mushroom3;
+
+    private static Mushroom setupMushroom(String name, MushroomType type, String fromM, String toM){
+        Mushroom m = new Mushroom();
+        m.setName(name);
+        m.setIntervalOfOccurrence(fromM,toM);
+        m.setType(type);
+        return m;
+    }
 
     @Before
     public void Setup(){
         //TODO: actual setup
+
+        database = new MockDatabase();
+        mushroom1 = setupMushroom("some",MushroomType.UNEDIBLE,"june","july");
+        mushroom2 = setupMushroom("other",MushroomType.POISONOUS,"june","july");
+        mushroom3 = setupMushroom("different",MushroomType.UNEDIBLE,"may","september");
+
 
 
         new Expectations(){{
@@ -173,24 +194,106 @@ public class MushroomServiceImplTest {
     }
 
     @Test
-    public void findAllMushrooms(){}
+    public void findAllMushrooms(){
+
+        assertThat(service.findAllMushrooms()).isEmpty();
+
+        database.create(mushroom1);
+        database.create(mushroom2);
+        database.create(mushroom3);
+
+        assertThat(service.findAllMushrooms()).containsExactlyInAnyOrder(mushroom1,mushroom2,mushroom3);
+    }
 
     @Test
-    public void findMushroomById(){}
+    public void findMushroomById(){
+        database.create(mushroom1);
+        database.create(mushroom2);
+        //null
+        assertThatThrownBy(() -> service.findMushroomById(null)).isInstanceOf(IllegalArgumentException.class);
+        //valid
+        assertThat(service.findMushroomById(mushroom1.getId())).isEqualToComparingFieldByField(mushroom1);
+        //invalid
+        assertThat(service.findMushroomById(999L)).isNull();
+    }
 
     @Test
-    public void FindMushroomByName(){}
+    public void FindMushroomByName(){
+
+        database.create(mushroom1);
+        database.create(mushroom2);
+
+        //null name
+        assertThatThrownBy(() -> service.findMushroomByName(null)).isInstanceOf(IllegalArgumentException.class);
+        //nonexistent name
+        assertThat(service.findMushroomByName(mushroom3.getName())).isNull();
+        //existing name
+        database.create(mushroom3);
+        assertThat(service.findMushroomByName(mushroom3.getName())).isEqualToComparingFieldByField(mushroom3);
+        //empty string
+        assertThat(service.findMushroomByName("")).isNull();
+
+    }
 
     @Test
     public void findByIntervalOfOccurrence(){}
 
     @Test
-    public void createMushroom(){}
+    public void createMushroom(){
+
+        assertThat(mushroom1.getId()).isNull();
+        service.createMushroom(mushroom1);
+        assertThat(mushroom1.getId()).isNotNull();
+
+
+        //entity with preexisting ID
+        mushroom2.setId(2L);
+        assertThatThrownBy(()->service.createMushroom(mushroom2)).isInstanceOf(IllegalArgumentException.class);
+
+        //entity with conflicting ID
+        mushroom2.setId(mushroom1.getId());
+        assertThatThrownBy(()->service.createMushroom(mushroom2)).isInstanceOf(IllegalArgumentException.class);
+
+        //null
+        assertThatThrownBy(()->service.createMushroom(null)).isInstanceOf(IllegalArgumentException.class);
+    }
 
     @Test
-    public void deleteMushroom(){}
+    public void deleteMushroom(){
+
+        database.create(mushroom1);
+
+        //delete nonexistent without ID
+        assertThatThrownBy(()->service.deleteMushroom(mushroom2)).isInstanceOf(IllegalArgumentException.class);
+        //delete nonexistent with ID
+        mushroom2.setId(2L);
+        assertThatThrownBy(()->service.deleteMushroom(mushroom2)).isInstanceOf(IllegalArgumentException.class);
+        //correct delete
+        service.deleteMushroom(mushroom1);
+        assertThat(database.findAll()).isEmpty();
+        //delete null
+        assertThatThrownBy(()->service.deleteMushroom(null)).isInstanceOf(IllegalArgumentException.class);
+    }
 
     @Test
-    public void updateMushroom(){}
+    public void updateMushroom(){
+
+        database.create(mushroom1);
+        database.create(mushroom3);
+
+        //update no id
+        assertThatThrownBy(()->service.updateMushroom(mushroom2)).isInstanceOf(IllegalArgumentException.class);
+        //update nonexistent ID
+        mushroom2.setId(1234L);
+        assertThatThrownBy(()->service.updateMushroom(mushroom2)).isInstanceOf(IllegalArgumentException.class);
+        //correct update
+        String newName = "Totaly new name";
+        mushroom1.setName(newName);
+        service.updateMushroom(mushroom1);
+        Mushroom tmpMush = database.findById(mushroom1.getId());
+        assertThat(tmpMush.getName().equals(newName));
+        //update null
+        assertThatThrownBy(()->service.updateMushroom(null)).isInstanceOf(IllegalArgumentException.class);
+    }
 
 }
