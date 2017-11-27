@@ -57,10 +57,8 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
         nonPersistedHunter.setPasswordHash("armor");
 
         persistedHunter = createHunter("Edward", "Elric", "fullmetal", "buw9fww", true);
-        persistedHunter.setPasswordHash("winry");
 
         persistedHunter2 = createHunter("Vlad", "Third", "theImpaler", "thu3hhbm",false);
-        persistedHunter2.setPasswordHash("badGuy");
 
         new Expectations() {{
             mushroomHunterDao.create((MushroomHunter) any);
@@ -322,24 +320,50 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
 
 
     @Test
-    @Ignore
-    public void updatePassword() throws Exception {
-        assertThat(service.authenticate(persistedHunter, "winry")).isTrue();
-        service.updatePassword(persistedHunter, "winry", "hudsonsoft");
-        assertThat(service.authenticate(persistedHunter, "winry")).isFalse();
-        assertThat(service.authenticate(persistedHunter, "hudsonsoft")).isTrue();
+    public void updatePassword(){
+        String oldPassword = "skrra8pa";
+        String newPassword = "ka2kapum";
+        newHunter = createHunter("Jan", "Jakub", "BMPRS", oldPassword, false);
+        service.registerHunter(newHunter, newHunter.getPasswordHash());
+
+        assertThat(service.updatePassword(newHunter, oldPassword, newPassword)).isTrue();
     }
 
     @Test
-    @Ignore
+    public void updatePasswordWithIncorrectOldPassword(){
+        String oldPassword = "skrra8pa";
+        String newPassword = "ka2kapum";
+        newHunter = createHunter("Jan", "Jakub", "BMPRS", oldPassword, false);
+        service.registerHunter(newHunter, newHunter.getPasswordHash());
+
+        assertThat(service.updatePassword(newHunter, "wrongOldPassword", newPassword)).isFalse();
+    }
+
+    @Test
     public void updatePasswordToNull() throws Exception {
-        assertThatThrownBy(() -> service.updatePassword(persistedHunter, "winry", null)).isInstanceOf(EntityOperationServiceException.class);
+        String password = "skrra8pa";
+        newHunter = createHunter("Jan", "Jakub", "BMPRS", password, false);
+        service.registerHunter(newHunter, newHunter.getPasswordHash());
+
+        assertThatThrownBy(() -> service.updatePassword(newHunter, password, null)).isInstanceOf(EntityOperationServiceException.class);
     }
 
     @Test
-    @Ignore
-    public void authenticate() throws Exception {
-        assertThat(service.authenticate(persistedHunter, "winry")).isTrue();
+    public void authenticate(){
+        String password = "95gh3kew";
+        newHunter = createHunter("Jan", "Jakub", "BMPRS", password, false);
+        service.registerHunter(newHunter, newHunter.getPasswordHash());
+
+        assertThat(service.authenticate(newHunter, password)).isTrue();
+    }
+
+    @Test
+    public void invalidAuthenticateWithWrongPassword(){
+        String password = "95gh3kew";
+        newHunter = createHunter("Jan", "Jakub", "BMPRS", password, false);
+        service.registerHunter(newHunter, newHunter.getPasswordHash());
+
+        assertThat(service.authenticate(newHunter, "wrongPassword")).isFalse();
     }
 
     @Test
