@@ -380,7 +380,7 @@ public class MushroomServiceImplTest {
         mushroom1.setName(newName);
         service.updateMushroom(mushroom1);
         Mushroom tmpMush = database.findById(mushroom1.getId());
-        assertThat(tmpMush.getName().equals(newName));
+        assertThat(tmpMush.getName()).isEqualTo(newName);
     }
 
     @Test

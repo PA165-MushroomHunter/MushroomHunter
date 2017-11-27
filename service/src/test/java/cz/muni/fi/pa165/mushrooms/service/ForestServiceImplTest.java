@@ -366,7 +366,7 @@ public class ForestServiceImplTest {
         forest1.setName(newName);
         service.updateForest(forest1);
         Forest tmp = database.findById(forest1.getId());
-        assertThat(tmp.getName().equals(newName));
+        assertThat(tmp.getName()).isEqualTo(newName);
     }
 
     @Test
