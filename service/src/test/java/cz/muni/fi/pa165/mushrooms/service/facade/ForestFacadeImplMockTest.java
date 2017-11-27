@@ -115,6 +115,8 @@ public class ForestFacadeImplMockTest extends AbstractTransactionalJUnit4SpringC
                     //always returns forest1, forest2,
                     //correct list is not a point of this test
                     //no functionality yet
+
+                    return null;
                 }
             }; minTimes = 0;
 
