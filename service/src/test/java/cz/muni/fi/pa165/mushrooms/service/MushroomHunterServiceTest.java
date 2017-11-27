@@ -13,6 +13,7 @@ import mockit.Tested;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
@@ -174,27 +175,27 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
     }
 
     @Test
-    public void findMushroomHunterById() throws Exception {
+    public void findById() throws Exception {
         assertThat(service.findHunterById(persistedHunter.getId())).isEqualTo(persistedHunter);
     }
 
     @Test
-    public void findMushroomHunterByNullId() throws Exception {
-        assertThatThrownBy(() -> service.findHunterById(null)).isInstanceOf(EntityFindServiceException.class);
+    public void findByNullId() throws Exception {
+        assertThatThrownBy(() -> service.findHunterById(null)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void findMushroomHunterWithNonExistingId() throws Exception {
+    public void findWithNonExistingId() throws Exception {
         assertThat(service.findHunterById(-1L)).isNull();
     }
 
     @Test
-    public void findAllMushroomHunters() {
+    public void findAll() {
         assertThat(service.findAllHunters()).containsExactlyInAnyOrder(persistedHunter,persistedHunter2);
     }
 
     @Test
-    public void findMushroomHunterByNickname() throws Exception {
+    public void findByNickname() throws Exception {
         String existingNickname = persistedHunter.getUserNickname();
 
         assertThat(service.findHunterByNickname(existingNickname)).isNotNull();
@@ -202,18 +203,18 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
     }
 
     @Test
-    public void findByMushroomHunterNullNickname() throws Exception {
-        assertThatThrownBy(() -> service.findHunterByNickname(null)).isInstanceOf(EntityFindServiceException.class);
+    public void findByNullNickname() throws Exception {
+        assertThatThrownBy(() -> service.findHunterByNickname(null)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void findByMushroomHunterNonExistingNickname() {
+    public void findByNonExistingNickname() {
         String nonPersistedNickname = "nickname";
         assertThat(service.findHunterByNickname(nonPersistedNickname)).isNull();
     }
 
     @Test
-    public void createMushroomHunter() {
+    public void create() {
         newHunter = createHunter("Jan", "Jakub", "J2J", "95gh3kew", false);
         int oldSize = persistedMushroomHunter.size();
 
@@ -222,48 +223,48 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
     }
 
     @Test
-    public void createNullMushroomHunter() throws Exception {
-        assertThatThrownBy(() -> service.registerHunter(null, "abcd")).isInstanceOf(EntityOperationServiceException.class);
+    public void createNull() throws Exception {
+        assertThatThrownBy(() -> service.registerHunter(null, "abcd")).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void createNullFirstNameMushroomHunter() throws Exception {
+    public void createNullFirstName() throws Exception {
         newHunter = createHunter(null, "Jakub", "J2J", "95gh3kew", false);
-        assertThatThrownBy(() -> service.registerHunter(newHunter, newHunter.getPasswordHash())).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(() -> service.registerHunter(newHunter, newHunter.getPasswordHash())).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void createNullLSurnameMushroomHunter() throws Exception {
+    public void createNullLSurname() throws Exception {
         newHunter = createHunter("Jan", null, "J2J", "95gh3kew", false);
-        assertThatThrownBy(() -> service.registerHunter(newHunter, newHunter.getPasswordHash())).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(() -> service.registerHunter(newHunter, newHunter.getPasswordHash())).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void createNullNicknameMushroomHunter() throws Exception {
+    public void createNullNickname() throws Exception {
         newHunter = createHunter("Jan", "Jakub", null, "95gh3kew", false);
-        assertThatThrownBy(() -> service.registerHunter(newHunter, newHunter.getPasswordHash())).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(() -> service.registerHunter(newHunter, newHunter.getPasswordHash())).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void createDuplicateMushroomHunter() throws Exception {
-        assertThatThrownBy(() -> service.registerHunter(persistedHunter, persistedHunter.getPasswordHash())).isInstanceOf(EntityOperationServiceException.class);
+    public void createDuplicate() throws Exception {
+        assertThatThrownBy(() -> service.registerHunter(persistedHunter, persistedHunter.getPasswordHash())).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void deleteMushroomHunter() throws Exception {
+    public void delete() throws Exception {
         assertThat(persistedMushroomHunter.values()).containsExactlyInAnyOrder(persistedHunter,persistedHunter2);
         service.deleteHunter(persistedHunter);
         assertThat(persistedMushroomHunter.values()).containsExactlyInAnyOrder(persistedHunter2);
     }
 
     @Test
-    public void deleteNonExistingMushroomHunter() throws Exception {
+    public void deleteNonExisting() throws Exception {
         assertThat(service.findAllHunters()).doesNotContain(nonPersistedHunter);
-        assertThatThrownBy(() -> service.deleteHunter(nonPersistedHunter)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(() -> service.deleteHunter(nonPersistedHunter)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void updateMushroomHuntersNickname() throws Exception {
+    public void updateNickname() throws Exception {
         String newUpdateValue = "New Nickname";
 
         assertThat(persistedHunter.getUserNickname()).isNotEqualTo(newUpdateValue);
@@ -275,7 +276,7 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
     }
 
     @Test
-    public void updateMushroomHuntersInfo() throws Exception {
+    public void updateInfo() throws Exception {
         String newUpdateValue = "New Info";
 
         assertThat(persistedHunter.getPersonalInfo()).isNotEqualTo(newUpdateValue);
@@ -287,35 +288,35 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
     }
 
     @Test
-    public void updateMushroomHuntersNicknameToNull() throws Exception {
+    public void updateNicknameToNull() throws Exception {
         String newUpdateValue = null;
         persistedHunter.setUserNickname(newUpdateValue);
 
-        assertThatThrownBy(() -> service.updateHunter(persistedHunter)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(() -> service.updateHunter(persistedHunter)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void updateMushroomHuntersToNicknameDuplicate() throws Exception {
+    public void updateToNicknameDuplicate() throws Exception {
         String newUpdateValue = persistedHunter2.getUserNickname();
         persistedHunter.setUserNickname(newUpdateValue);
 
-        assertThatThrownBy(() -> service.updateHunter(persistedHunter)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(() -> service.updateHunter(persistedHunter)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void updateMushroomHuntersFirstNameToNull() throws Exception {
+    public void updateFirstNameToNull() throws Exception {
         String newUpdateValue = null;
         persistedHunter.setFirstName(newUpdateValue);
 
-        assertThatThrownBy(() -> service.updateHunter(persistedHunter)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(() -> service.updateHunter(persistedHunter)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void updateMushroomHuntersSurnameToNull() throws Exception {
+    public void updateSurnameToNull() throws Exception {
         String newUpdateValue = null;
         persistedHunter.setSurname(newUpdateValue);
 
-        assertThatThrownBy(() -> service.updateHunter(persistedHunter)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(() -> service.updateHunter(persistedHunter)).isInstanceOf(DataAccessException.class);
     }
 
 
@@ -345,7 +346,7 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
         newHunter = createHunter("Jan", "Jakub", "BMPRS", password, false);
         service.registerHunter(newHunter, newHunter.getPasswordHash());
 
-        assertThatThrownBy(() -> service.updatePassword(newHunter, password, null)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(() -> service.updatePassword(newHunter, password, null)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
