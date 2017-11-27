@@ -4,6 +4,8 @@ import cz.muni.fi.pa165.mushrooms.dao.MushroomDao;
 import cz.muni.fi.pa165.mushrooms.dao.VisitDao;
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
 import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
+import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityFindServiceException;
+import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityOperationServiceException;
 import mockit.Delegate;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -210,7 +212,7 @@ public class MushroomServiceImplTest {
         database.create(mushroom1);
         database.create(mushroom2);
         //null
-        assertThatThrownBy(() -> service.findMushroomById(null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.findMushroomById(null)).isInstanceOf(EntityFindServiceException.class);
         //valid
         assertThat(service.findMushroomById(mushroom1.getId())).isEqualToComparingFieldByField(mushroom1);
         //invalid
@@ -224,7 +226,7 @@ public class MushroomServiceImplTest {
         database.create(mushroom2);
 
         //null name
-        assertThatThrownBy(() -> service.findMushroomByName(null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.findMushroomByName(null)).isInstanceOf(EntityFindServiceException.class);
         //nonexistent name
         assertThat(service.findMushroomByName(mushroom3.getName())).isNull();
         //existing name
@@ -248,14 +250,14 @@ public class MushroomServiceImplTest {
 
         //entity with preexisting ID
         mushroom2.setId(2L);
-        assertThatThrownBy(()->service.createMushroom(mushroom2)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->service.createMushroom(mushroom2)).isInstanceOf(EntityOperationServiceException.class);
 
         //entity with conflicting ID
         mushroom2.setId(mushroom1.getId());
-        assertThatThrownBy(()->service.createMushroom(mushroom2)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->service.createMushroom(mushroom2)).isInstanceOf(EntityOperationServiceException.class);
 
         //null
-        assertThatThrownBy(()->service.createMushroom(null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->service.createMushroom(null)).isInstanceOf(EntityOperationServiceException.class);
     }
 
     @Test
@@ -264,15 +266,15 @@ public class MushroomServiceImplTest {
         database.create(mushroom1);
 
         //delete nonexistent without ID
-        assertThatThrownBy(()->service.deleteMushroom(mushroom2)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->service.deleteMushroom(mushroom2)).isInstanceOf(EntityOperationServiceException.class);
         //delete nonexistent with ID
         mushroom2.setId(2L);
-        assertThatThrownBy(()->service.deleteMushroom(mushroom2)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->service.deleteMushroom(mushroom2)).isInstanceOf(EntityOperationServiceException.class);
         //correct delete
         service.deleteMushroom(mushroom1);
         assertThat(database.findAll()).isEmpty();
         //delete null
-        assertThatThrownBy(()->service.deleteMushroom(null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->service.deleteMushroom(null)).isInstanceOf(EntityOperationServiceException.class);
     }
 
     @Test
@@ -282,10 +284,10 @@ public class MushroomServiceImplTest {
         database.create(mushroom3);
 
         //update no id
-        assertThatThrownBy(()->service.updateMushroom(mushroom2)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->service.updateMushroom(mushroom2)).isInstanceOf(EntityOperationServiceException.class);
         //update nonexistent ID
         mushroom2.setId(1234L);
-        assertThatThrownBy(()->service.updateMushroom(mushroom2)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->service.updateMushroom(mushroom2)).isInstanceOf(EntityOperationServiceException.class);
         //correct update
         String newName = "Totaly new name";
         mushroom1.setName(newName);
@@ -293,7 +295,7 @@ public class MushroomServiceImplTest {
         Mushroom tmpMush = database.findById(mushroom1.getId());
         assertThat(tmpMush.getName().equals(newName));
         //update null
-        assertThatThrownBy(()->service.updateMushroom(null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(()->service.updateMushroom(null)).isInstanceOf(EntityOperationServiceException.class);
     }
 
 }
