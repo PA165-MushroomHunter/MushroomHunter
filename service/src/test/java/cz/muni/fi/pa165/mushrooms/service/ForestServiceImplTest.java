@@ -13,6 +13,7 @@ import org.springframework.dao.DataAccessException;
 
 import java.util.*;
 
+import static cz.muni.fi.pa165.mushrooms.service.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -23,6 +24,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  */
 
 public class ForestServiceImplTest {
+    @Injectable
+    private VisitService visitService; //TODO: mock at testing business function
 
     @Injectable
     private ForestDao forestDao;
@@ -79,26 +82,20 @@ public class ForestServiceImplTest {
         }
 
         public List<Forest> findAllForestsWithMushroom(Mushroom mushroomEntity) throws DataAccessException {
-            return null; //TODO: not decided if we want this functionality
+            return null; //TODO
         }
 
 
     }
 
-    MockDatabase database;
-    Forest forest1, forest2, forest3;
+    private MockDatabase database;
+    private Forest forest1, forest2, forest3;
 
     private static Forest setupForest(String name, String description) {
         Forest f = new Forest();
         f.setName(name);
         f.setDescription(description);
         return f;
-    }
-
-    //please move it to TestUtils
-    public static void validateForest(Forest forest) {
-        if (forest == null) throw new IllegalArgumentException("null");
-        if (forest.getName() == null) throw new IllegalArgumentException("nameIsNull");
     }
 
     @Before

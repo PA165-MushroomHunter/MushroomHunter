@@ -16,6 +16,11 @@ import java.util.Map;
  */
 class TestUtils {
 
+    public static void validateForest(Forest forest) {
+        if (forest == null) throw new IllegalArgumentException("null");
+        if (forest.getName() == null) throw new IllegalArgumentException("nameIsNull");
+    }
+
     public static Forest createForest(String name, String description){
         Forest forest = new Forest();
         forest.setName(name);

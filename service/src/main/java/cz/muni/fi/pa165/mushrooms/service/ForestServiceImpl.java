@@ -32,7 +32,7 @@ public class ForestServiceImpl implements ForestService {
     private ForestDao forestDao;
 
     @Inject
-    VisitService visitService;
+    private VisitService visitService;
 
     public List<Forest> findAllForests() throws DataAccessException {
         try {
