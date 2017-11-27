@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.mushrooms.service;
 
+import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
 import cz.muni.fi.pa165.mushrooms.entity.Visit;
 
 import java.util.List;
@@ -17,6 +18,16 @@ class TestUtils {
                     && v.getHunter().equals(newVisit.getHunter())
                     && v.getForest().equals(newVisit.getForest())
                     && v.getDate().equals(newVisit.getDate())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static boolean checkMushroomHunterDuplicity(Map<Long, MushroomHunter> hunterMap, MushroomHunter newHunter) {
+        for (MushroomHunter hunter : hunterMap.values()) {
+            if (!hunter.getId().equals(newHunter.getId())
+                    && hunter.getUserNickname().equals(newHunter.getUserNickname())) {
                 return true;
             }
         }
