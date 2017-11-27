@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Facade layer of the Visit type objects.
  *
- * @author  bencikpeter, bohdancvejn, bkompis, Lindar84, Buvko
+ * @author bencikpeter, bohdancvejn, bkompis, Lindar84, Buvko
  */
 public interface VisitFacade {
 
@@ -32,7 +32,7 @@ public interface VisitFacade {
      *
      * @param id is primary key for a Visit object
      * @throws IllegalArgumentException on null visit given as a parameter
-     *      or if the visit given as a parameter doesn't exist in the database
+     *                                  or if the visit given as a parameter doesn't exist in the database
      */
     void deleteVisit(Long id);
 
@@ -41,7 +41,7 @@ public interface VisitFacade {
      *
      * @param visit is a Visit object
      * @throws IllegalArgumentException on null visit given as a parameter
-     *      or if the visit given as a parameter doesn't exist in the database
+     *                                  or if the visit given as a parameter doesn't exist in the database
      */
     void updateVisit(VisitDTO visit);
 
@@ -58,9 +58,8 @@ public interface VisitFacade {
      *
      * @param forest is a Forest where you are looking for visits
      * @return List of all visits in the forest, empty List if there nobody enter
-     *
      * @throws IllegalArgumentException on null Forest given as a parameter
-     *      or if the Forest given as a parameter doesn't exist in the database
+     *                                  or if the Forest given as a parameter doesn't exist in the database
      */
     List<VisitDTO> listAllVisitsForForest(ForestDTO forest);
 
@@ -69,9 +68,8 @@ public interface VisitFacade {
      *
      * @param mushroomHunter is a user of whom we want to know his visits in any forest
      * @return List of all visits in forests carried out by the mushroomHunter, empty List if he hasn't been to a forest yet
-     *
      * @throws IllegalArgumentException on null MushroomHunter given as a parameter
-     *      or if the MushroomHunter given as a parameter doesn't exist in the database
+     *                                  or if the MushroomHunter given as a parameter doesn't exist in the database
      */
     List<VisitDTO> listAllVisitsForMushroomHunter(MushroomHunterDTO mushroomHunter);
 

@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ContextConfiguration(classes = ServiceConfiguration.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
-public class withMock_MushroomFacadeImplTest extends AbstractTransactionalJUnit4SpringContextTests {
+public class MushroomFacadeImplMockTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     private Mushroom mushroom1;
     private Mushroom mushroom2;
@@ -42,9 +42,11 @@ public class withMock_MushroomFacadeImplTest extends AbstractTransactionalJUnit4
 
     @Injectable
     private MushroomService service;
-    @Inject @Tested
+    @Inject
+    @Tested
     private Mapper dozer;
-    @Inject @Tested
+    @Inject
+    @Tested
     private BeanMappingService mapping;
     @Tested(fullyInitialized = true)
     private MushroomFacadeImpl facade;
@@ -152,25 +154,25 @@ public class withMock_MushroomFacadeImplTest extends AbstractTransactionalJUnit4
 
     @Test
     public void findAllMushroomsTest() {
-        assertThat(facade.findAllMushrooms()).containsExactlyInAnyOrder(mushroom1DTO,mushroom2DTO);
+        assertThat(facade.findAllMushrooms()).containsExactlyInAnyOrder(mushroom1DTO, mushroom2DTO);
     }
 
     @Test
-    public void findMushroomByIdTest(){
+    public void findMushroomByIdTest() {
         assertThat(facade.findMushroomById(1L)).isEqualToComparingFieldByField(mushroom1DTO);
         assertThat(facade.findMushroomById(2L)).isEqualToComparingFieldByField(mushroom2DTO);
         assertThat(facade.findMushroomById(123L)).isNull();
     }
 
     @Test
-    public void findMushroomByNameTest(){
+    public void findMushroomByNameTest() {
         assertThat(facade.findMushroomByName(mushroom1.getName())).isEqualToComparingFieldByField(mushroom1DTO);
         assertThat(facade.findMushroomByName(mushroom2.getName())).isEqualToComparingFieldByField(mushroom2DTO);
         assertThat(facade.findMushroomByName("lalala")).isNull();
     }
 
     @Test
-    public void findMushroomByTypeTest(){
+    public void findMushroomByTypeTest() {
         assertThat(facade.findByMushroomType(mushroom1.getType())).containsExactly(mushroom1DTO);
         assertThat(facade.findByMushroomType(mushroom2.getType())).containsExactly(mushroom2DTO);
         assertThat(facade.findByMushroomType(MushroomType.UNEDIBLE)).isEmpty();
@@ -194,17 +196,17 @@ public class withMock_MushroomFacadeImplTest extends AbstractTransactionalJUnit4
     }
 
     @Test
-    public void deleteMushroomTest(){
+    public void deleteMushroomTest() {
         assertThatThrownBy(() -> facade.deleteMushroom(null)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    public void updateMushroomTest(){
+    public void updateMushroomTest() {
         assertThatThrownBy(() -> facade.updateMushroom(null)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    public void createMushroom(){
+    public void createMushroom() {
         assertThatThrownBy(() -> facade.createMushroom(null)).isInstanceOf(IllegalArgumentException.class);
     }
 

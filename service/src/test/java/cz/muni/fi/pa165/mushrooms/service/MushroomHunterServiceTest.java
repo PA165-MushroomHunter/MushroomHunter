@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  */
 @ContextConfiguration(classes = ServiceConfiguration.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
-public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4SpringContextTests  {
+public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Injectable
     private MushroomHunterDao mushroomHunterDao;
@@ -51,39 +51,39 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
     @Before
     public void setUp() {
         // note: for tests here, password hash and password are the same
-        nonPersistedHunter = createHunter("Alphonse", "Elric", "theGoodGuy" , "smt5udp", false);
+        nonPersistedHunter = createHunter("Alphonse", "Elric", "theGoodGuy", "smt5udp", false);
         nonPersistedHunter.setPasswordHash("armor");
 
         persistedHunter = createHunter("Edward", "Elric", "fullmetal", "buw9fww", true);
 
-        persistedHunter2 = createHunter("Vlad", "Third", "theImpaler", "thu3hhbm",false);
+        persistedHunter2 = createHunter("Vlad", "Third", "theImpaler", "thu3hhbm", false);
 
         new Expectations() {{
             mushroomHunterDao.create((MushroomHunter) any);
             result = new Delegate() {
                 void foo(MushroomHunter mushroomHunter) {
-                    if (mushroomHunter == null){
+                    if (mushroomHunter == null) {
                         throw new IllegalArgumentException("null mushroom hunter on creating");
                     }
-                    if (mushroomHunter.getId() != null){
+                    if (mushroomHunter.getId() != null) {
                         throw new IllegalArgumentException("id already in db on creating mushroom hunter");
                     }
-                    if (mushroomHunter.getFirstName() == null){
+                    if (mushroomHunter.getFirstName() == null) {
                         throw new IllegalArgumentException("null first name on creating mushroom hunter");
                     }
-                    if (mushroomHunter.getSurname() == null){
+                    if (mushroomHunter.getSurname() == null) {
                         throw new IllegalArgumentException("null surname on creating mushroom hunter");
                     }
-                    if (mushroomHunter.getUserNickname() == null){
+                    if (mushroomHunter.getUserNickname() == null) {
                         throw new IllegalArgumentException("null nickname on creating mushroom hunter");
                     }
-                    if (checkMushroomHunterDuplicity(persistedMushroomHunter, mushroomHunter)){
+                    if (checkMushroomHunterDuplicity(persistedMushroomHunter, mushroomHunter)) {
                         throw new IllegalArgumentException("duplicate mushroom hunter on creating");
                     }
 
                     mushroomHunter.setId(dbCounter);
                     persistedMushroomHunter.put(dbCounter, mushroomHunter);
-                    dbCounter ++;
+                    dbCounter++;
                 }
             };
             minTimes = 0;
@@ -91,7 +91,7 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
             mushroomHunterDao.findById(anyLong);
             result = new Delegate() {
                 MushroomHunter foo(Long id) {
-                    if (id == null){
+                    if (id == null) {
                         throw new IllegalArgumentException("null id");
                     }
                     return persistedMushroomHunter.get(id);
@@ -102,11 +102,11 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
             mushroomHunterDao.findByNickname(anyString);
             result = new Delegate() {
                 MushroomHunter foo(String nickname) {
-                    if (nickname == null){
+                    if (nickname == null) {
                         throw new IllegalArgumentException("null id");
                     }
-                    for (MushroomHunter hunter: persistedMushroomHunter.values()) {
-                        if (hunter.getUserNickname().equals(nickname)){
+                    for (MushroomHunter hunter : persistedMushroomHunter.values()) {
+                        if (hunter.getUserNickname().equals(nickname)) {
                             return hunter;
                         }
                     }
@@ -127,10 +127,10 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
             mushroomHunterDao.delete((MushroomHunter) any);
             result = new Delegate() {
                 void foo(MushroomHunter mushroomHunter) {
-                    if (mushroomHunter == null || mushroomHunter.getId() == null ){
+                    if (mushroomHunter == null || mushroomHunter.getId() == null) {
                         throw new IllegalArgumentException("invalid entity");
                     }
-                    if (persistedMushroomHunter.get(mushroomHunter.getId()) == null){
+                    if (persistedMushroomHunter.get(mushroomHunter.getId()) == null) {
                         throw new IllegalArgumentException("not in db");
                     }
                     persistedMushroomHunter.remove(mushroomHunter.getId());
@@ -141,22 +141,22 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
             mushroomHunterDao.update((MushroomHunter) any);
             result = new Delegate() {
                 void foo(MushroomHunter mushroomHunter) {
-                    if (mushroomHunter == null){
+                    if (mushroomHunter == null) {
                         throw new IllegalArgumentException("null mushroom hunter on mushroom hunter update");
                     }
-                    if (mushroomHunter.getId() == null){
+                    if (mushroomHunter.getId() == null) {
                         throw new IllegalArgumentException("null id on mushroom hunter update");
                     }
-                    if (mushroomHunter.getFirstName() == null){
+                    if (mushroomHunter.getFirstName() == null) {
                         throw new IllegalArgumentException("null first name on mushroom hunter update");
                     }
-                    if (mushroomHunter.getSurname() == null){
+                    if (mushroomHunter.getSurname() == null) {
                         throw new IllegalArgumentException("null surname on mushroom hunter update");
                     }
-                    if (mushroomHunter.getUserNickname() == null){
+                    if (mushroomHunter.getUserNickname() == null) {
                         throw new IllegalArgumentException("null nickname on mushroom hunter update");
                     }
-                    if (checkMushroomHunterDuplicity(persistedMushroomHunter, mushroomHunter)){
+                    if (checkMushroomHunterDuplicity(persistedMushroomHunter, mushroomHunter)) {
                         throw new IllegalArgumentException("duplicating unique mushroom hunter attribute on updating");
                     }
                     persistedMushroomHunter.replace(mushroomHunter.getId(), mushroomHunter);
@@ -168,7 +168,7 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
 
         mushroomHunterDao.create(persistedHunter);
         mushroomHunterDao.create(persistedHunter2);
-        persistedMushroomHunterPreTest =  persistedMushroomHunter.size();
+        persistedMushroomHunterPreTest = persistedMushroomHunter.size();
     }
 
     @Test
@@ -188,7 +188,7 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
 
     @Test
     public void findAll() {
-        assertThat(service.findAllHunters()).containsExactlyInAnyOrder(persistedHunter,persistedHunter2);
+        assertThat(service.findAllHunters()).containsExactlyInAnyOrder(persistedHunter, persistedHunter2);
     }
 
     @Test
@@ -249,7 +249,7 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
 
     @Test
     public void delete() throws Exception {
-        assertThat(persistedMushroomHunter.values()).containsExactlyInAnyOrder(persistedHunter,persistedHunter2);
+        assertThat(persistedMushroomHunter.values()).containsExactlyInAnyOrder(persistedHunter, persistedHunter2);
         service.deleteHunter(persistedHunter);
         assertThat(persistedMushroomHunter.values()).containsExactlyInAnyOrder(persistedHunter2);
     }
@@ -318,7 +318,7 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
 
 
     @Test
-    public void updatePassword(){
+    public void updatePassword() {
         String oldPassword = "skrra8pa";
         String newPassword = "ka2kapum";
         newHunter = createHunter("Jan", "Jakub", "BMPRS", oldPassword, false);
@@ -328,7 +328,7 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
     }
 
     @Test
-    public void updatePasswordWithIncorrectOldPassword(){
+    public void updatePasswordWithIncorrectOldPassword() {
         String oldPassword = "skrra8pa";
         String newPassword = "ka2kapum";
         newHunter = createHunter("Jan", "Jakub", "BMPRS", oldPassword, false);
@@ -347,7 +347,7 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
     }
 
     @Test
-    public void authenticate(){
+    public void authenticate() {
         String password = "95gh3kew";
         newHunter = createHunter("Jan", "Jakub", "BMPRS", password, false);
         service.registerHunter(newHunter, newHunter.getPasswordHash());
@@ -356,7 +356,7 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
     }
 
     @Test
-    public void invalidAuthenticateWithWrongPassword(){
+    public void invalidAuthenticateWithWrongPassword() {
         String password = "95gh3kew";
         newHunter = createHunter("Jan", "Jakub", "BMPRS", password, false);
         service.registerHunter(newHunter, newHunter.getPasswordHash());

@@ -20,8 +20,8 @@ public interface MushroomHunterDao {
     /**
      * Stores the MushroomHunter entity into persistent database
      *
-     * @throws IllegalArgumentException on null mushroom entity given
      * @param mh MushroomHunter object
+     * @throws IllegalArgumentException on null mushroom entity given
      */
     void create(MushroomHunter mh);
 
@@ -35,8 +35,8 @@ public interface MushroomHunterDao {
     /**
      * Update a visit in the database with new values.
      *
-     * @throws IllegalArgumentException on null mushroom entity given
      * @param mh MushroomHunter object to update
+     * @throws IllegalArgumentException on null mushroom entity given
      */
     void update(MushroomHunter mh);
 
@@ -50,27 +50,27 @@ public interface MushroomHunterDao {
     /**
      * Returns the list all MushroomHunter entities with given first name
      *
-     * @throws IllegalArgumentException on null first name given as an parameter
      * @param firstName String object, search criteria for MushroomHunter entity
      * @return the list all MushroomHunter entities with given first name
+     * @throws IllegalArgumentException on null first name given as an parameter
      */
     List<MushroomHunter> findByFirstName(String firstName);
 
     /**
      * Returns the list all MushroomHunter entities with given surname
      *
-     * @throws IllegalArgumentException on null surname given as an parameter
      * @param surname String object, search criteria for MushroomHunter entity
      * @return the list all MushroomHunter entities with given surname
+     * @throws IllegalArgumentException on null surname given as an parameter
      */
     List<MushroomHunter> findBySurname(String surname);
 
     /**
      * Returns single MushroomHunter entity with given nickname
      *
-     * @throws IllegalArgumentException on null first nickname given as an parameter
      * @param userNickname String object, search criteria for MushroomHunter entity
      * @return single MushroomHunter entity with given nickname
+     * @throws IllegalArgumentException on null first nickname given as an parameter
      */
     public MushroomHunter findByNickname(String userNickname);
 }

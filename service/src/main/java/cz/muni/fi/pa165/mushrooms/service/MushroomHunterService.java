@@ -35,7 +35,7 @@ public interface MushroomHunterService {
     /**
      * Registers new Mushroom Hunter with given password.
      *
-     * @param hunter hunter to be registered
+     * @param hunter   hunter to be registered
      * @param password hunters new password
      * @throws DataAccessException on invalid access
      */
@@ -60,7 +60,7 @@ public interface MushroomHunterService {
     /**
      * Updates given Mushroom Hunters password and validates of old one is correct.
      *
-     * @param hunter hunter to have password changed
+     * @param hunter      hunter to have password changed
      * @param oldPassword old password to be validated
      * @return true if validation passed and password was successfully changed false otherwise
      * @throws DataAccessException on invalid access
@@ -78,7 +78,7 @@ public interface MushroomHunterService {
     /**
      * Authenticates given Mushroom Hunter by given password.
      *
-     * @param hunter hunter to be authenticated
+     * @param hunter   hunter to be authenticated
      * @param password password for authentication
      * @throws DataAccessException on invalid access
      */

@@ -35,16 +35,11 @@ import static org.assertj.core.api.Assertions.*;
  *
  * @author bkompis
  */
-//TODO: ex throwing lower; DataAccessException (from facade impl)
-// TODO: constraints, exceptions in javadoc
-// TODO: equals()in DTOs vs. equals on all attributes
-// TODO: exception handling
-// TODO: more tests, + tests without mock (integration)
 @ContextConfiguration(classes = ServiceConfiguration.class)
-@TestExecutionListeners(TransactionalTestExecutionListener.class) // TODO: necessary?
-public class withMock_MushroomHunterFacadeImplTest extends AbstractTransactionalJUnit4SpringContextTests { //should be transactional?
+@TestExecutionListeners(TransactionalTestExecutionListener.class)
+public class MushroomHunterFacadeImplNoMockTest extends AbstractTransactionalJUnit4SpringContextTests {
 
-    private final Logger logger = LoggerFactory.getLogger(withMock_MushroomHunterFacadeImplTest.class);
+    private final Logger logger = LoggerFactory.getLogger(MushroomHunterFacadeImplNoMockTest.class);
 
     private MushroomHunter hunter1;
     private MushroomHunter hunter2;
@@ -54,9 +49,11 @@ public class withMock_MushroomHunterFacadeImplTest extends AbstractTransactional
 
     @Injectable
     private MushroomHunterService service;
-    @Inject @Tested // both annotations are necessary
+    @Inject
+    @Tested // both annotations are necessary
     private Mapper dozer;
-    @Inject @Tested
+    @Inject
+    @Tested
     private BeanMappingService mapping;
     @Tested(fullyInitialized = true)
     private MushroomHunterFacadeImpl facade;
@@ -72,7 +69,7 @@ public class withMock_MushroomHunterFacadeImplTest extends AbstractTransactional
     }
 
     @Before
-    public void setUp(){
+    public void setUp() {
         // note: for tests here, password hash and password are the same
         hunter1 = createMushroomHunter("Alphonse", "Elric", "theGoodGuy");
         hunter1.setPasswordHash("armor");
@@ -87,53 +84,60 @@ public class withMock_MushroomHunterFacadeImplTest extends AbstractTransactional
         hunter1DTO = mapping.mapTo(hunter1, MushroomHunterDTO.class);
         hunter2DTO = mapping.mapTo(hunter2, MushroomHunterDTO.class);
 
-        new Expectations(){{
+        new Expectations() {{
             service.authenticate((MushroomHunter) any, anyString);
             result = new Delegate() {
                 boolean foo(MushroomHunter hunter, String pass) {
                     return hunter != null && pass != null && hunter.getPasswordHash().equals(pass);
                 }
-            }; minTimes = 0;
+            };
+            minTimes = 0;
 
             service.findHunterById(anyLong);
             result = new Delegate() {
                 MushroomHunter foo(Long id) {
-                    if (id.equals(1L)){
+                    if (id.equals(1L)) {
                         return hunter1;
                     }
-                    if (id.equals(2L)){
+                    if (id.equals(2L)) {
                         return hunter2;
                     }
                     return null;
                 }
-            }; minTimes = 0;
+            };
+            minTimes = 0;
 
             service.updateHunter((MushroomHunter) any);
-            result = new Delegate(){
-                void foo(){}
+            result = new Delegate() {
+                void foo() {
+                }
                 // do nothing
-            }; minTimes = 0;
+            };
+            minTimes = 0;
 
             service.deleteHunter((MushroomHunter) any);
             result = new Delegate() {
-                void foo(){}
+                void foo() {
+                }
                 // do nothing
-            }; minTimes = 0;
+            };
+            minTimes = 0;
 
             service.findAllHunters();
-            result = new Delegate(){
-                List<MushroomHunter> foo(){
+            result = new Delegate() {
+                List<MushroomHunter> foo() {
                     List<MushroomHunter> res = new ArrayList<>();
                     res.add(hunter1);
                     res.add(hunter2);
                     return res;
                 }
-            }; minTimes = 0;
+            };
+            minTimes = 0;
 
             service.findHunterByNickname(anyString);
             result = new Delegate() {
-                MushroomHunter foo(String nickname){
-                    switch (nickname){
+                MushroomHunter foo(String nickname) {
+                    switch (nickname) {
                         case "theGoodGuy":
                             return hunter1;
                         case "fullmetal":
@@ -142,24 +146,27 @@ public class withMock_MushroomHunterFacadeImplTest extends AbstractTransactional
                             return null;
                     }
                 }
-            }; minTimes = 0;
+            };
+            minTimes = 0;
 
             service.isAdmin((MushroomHunter) any);
-            result = new Delegate(){
+            result = new Delegate() {
                 boolean foo(MushroomHunter hunter) {
                     return hunter != null && hunter.isAdmin();
                 }
-            }; minTimes = 0;
+            };
+            minTimes = 0;
 
             service.registerHunter((MushroomHunter) any, anyString);
-            result = new Delegate(){
-                void foo (MushroomHunter hunter, String password){
+            result = new Delegate() {
+                void foo(MushroomHunter hunter, String password) {
                     hunter.setPasswordHash(password);
                 }
-            }; minTimes = 0;
+            };
+            minTimes = 0;
 
             service.updatePassword((MushroomHunter) any, anyString, anyString);
-            result = new Delegate(){
+            result = new Delegate() {
                 boolean foo(MushroomHunter hunter, String oldPassword, String newPassword) {
                     if (!oldPassword.equals(hunter.getPasswordHash())) {
                         return false;
@@ -167,7 +174,8 @@ public class withMock_MushroomHunterFacadeImplTest extends AbstractTransactional
                     hunter.setPasswordHash(newPassword);
                     return true;
                 }
-            }; minTimes = 0;
+            };
+            minTimes = 0;
 
         }};
     }
@@ -187,7 +195,7 @@ public class withMock_MushroomHunterFacadeImplTest extends AbstractTransactional
     }
 
     @Test
-    public void registerHunter() { // maybe use BeanMappingService here
+    public void registerHunter() {
         MushroomHunterCreateDTO createDTO1 = new MushroomHunterCreateDTO();
         createDTO1.setAdmin(hunter1.isAdmin());
         createDTO1.setFirstName(hunter1.getFirstName());

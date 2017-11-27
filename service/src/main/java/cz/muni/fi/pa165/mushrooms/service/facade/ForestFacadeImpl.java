@@ -96,10 +96,10 @@ public class ForestFacadeImpl implements ForestFacade {
         if (mushroom == null) throw new IllegalArgumentException();
         Mushroom mushroomEntity = mushroomService.findMushroomById(mushroom.getId());
 
-        List<Map.Entry<Forest,Integer>> forestsPairs = service.findAllForestsWithMushroom(mushroomEntity);
+        List<Map.Entry<Forest, Integer>> forestsPairs = service.findAllForestsWithMushroom(mushroomEntity);
         List<Forest> forestsEntities = new ArrayList<>();
 
-        for (Map.Entry<Forest,Integer> entry : forestsPairs) {
+        for (Map.Entry<Forest, Integer> entry : forestsPairs) {
             forestsEntities.add(entry.getKey());
         }
 

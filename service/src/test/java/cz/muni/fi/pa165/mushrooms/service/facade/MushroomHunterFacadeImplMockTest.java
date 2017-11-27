@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
  */
 @ContextConfiguration(classes = ServiceConfiguration.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
-public class MushroomHunterFacadeImplTest extends AbstractTransactionalJUnit4SpringContextTests {
+public class MushroomHunterFacadeImplMockTest extends AbstractTransactionalJUnit4SpringContextTests {
     // relies on correct implementation of service
     // used in setup
     @Inject
@@ -67,7 +67,7 @@ public class MushroomHunterFacadeImplTest extends AbstractTransactionalJUnit4Spr
         hunter2 = createMushroomHunter("Edward", "Elric", "fullmetal");
         hunter2.setAdmin(true);
         service.registerHunter(hunter2, "winry");
-       assertNotNull(hunter2.getId());
+        assertNotNull(hunter2.getId());
 
         hunter1DTO = mapping.mapTo(hunter1, MushroomHunterDTO.class);
         assertNotNull(hunter1DTO);

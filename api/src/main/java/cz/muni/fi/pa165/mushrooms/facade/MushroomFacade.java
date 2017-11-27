@@ -6,7 +6,6 @@ import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
 import java.util.List;
 
 /**
- *
  * @author Barbora Kompisova, Buvko
  */
 public interface MushroomFacade {

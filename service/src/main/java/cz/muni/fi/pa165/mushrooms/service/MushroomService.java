@@ -54,7 +54,7 @@ public interface MushroomService {
      * Finds Mushrooms by its interval of occurrence.
      *
      * @param fromMonth from search criteria
-     * @param toMonth to search criteria
+     * @param toMonth   to search criteria
      * @return Mushrooms with given interval
      * @throws DataAccessException on invalid access
      */

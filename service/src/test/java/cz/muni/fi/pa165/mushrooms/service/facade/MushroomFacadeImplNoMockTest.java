@@ -28,7 +28,7 @@ import static org.junit.Assert.assertNotNull;
  */
 @ContextConfiguration(classes = ServiceConfiguration.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
-public class MushroomFacadeImplTest extends AbstractTransactionalJUnit4SpringContextTests {
+public class MushroomFacadeImplNoMockTest extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Inject
     MushroomService service;
@@ -60,7 +60,7 @@ public class MushroomFacadeImplTest extends AbstractTransactionalJUnit4SpringCon
     }
 
     @Test
-    public void findAllMushrooms(){
+    public void findAllMushrooms() {
         assertThat(facade.findAllMushrooms()).containsExactlyInAnyOrder(mushroom1DTO, mushroom2DTO);
     }
 
@@ -79,14 +79,14 @@ public class MushroomFacadeImplTest extends AbstractTransactionalJUnit4SpringCon
     }
 
     @Test
-    public void findByMushroomType(){
+    public void findByMushroomType() {
         assertThat(facade.findByMushroomType(MushroomType.POISONOUS)).containsExactly(mushroom1DTO);
         assertThat(facade.findByMushroomType(MushroomType.EDIBLE)).containsExactly(mushroom2DTO);
         assertThat(facade.findByMushroomType(MushroomType.UNEDIBLE)).isEmpty();
     }
 
     @Test
-    public void findByIntervalOfOccurrence(){       /////// TODO String - Date
+    public void findByIntervalOfOccurrence() {       /////// TODO String - Date
 //        assertThat(facade.findByIntervalOfOccurrence("April", "April")).containsExactly(mushroom1DTO);
 //        assertThat(facade.findByIntervalOfOccurrence("August", "August"))
 //                .containsExactlyInAnyOrder(mushroom1DTO, mushroom2DTO);

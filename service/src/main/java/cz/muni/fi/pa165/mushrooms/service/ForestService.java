@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * TODO: create  javadoc
- *
  * @author bencikpeter
  */
 public interface ForestService {
@@ -74,5 +72,5 @@ public interface ForestService {
      * @return list of touples of Forest and number of visits that found a particular mushroom sorted in descending order
      * @throws DataAccessException when any database access failure is encountered
      */
-    List<Map.Entry<Forest,Integer>> findAllForestsWithMushroom(Mushroom mushroomEntity) throws DataAccessException;
+    List<Map.Entry<Forest, Integer>> findAllForestsWithMushroom(Mushroom mushroomEntity) throws DataAccessException;
 }

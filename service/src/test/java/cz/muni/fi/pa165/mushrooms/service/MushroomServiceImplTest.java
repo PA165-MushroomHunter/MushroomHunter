@@ -44,7 +44,6 @@ public class MushroomServiceImplTest {
         private long databaseCounter = 0;
 
 
-
         public void create(Mushroom mushroom) {
             validateMushroom(mushroom);
             if (mushroom.getId() != null) throw new IllegalArgumentException("already in db");
@@ -56,23 +55,25 @@ public class MushroomServiceImplTest {
         public void update(Mushroom mushroom) {
             validateMushroom(mushroom);
             if (mushroom.getId() == null) throw new IllegalArgumentException("not persisted - cannot be updated");
-            if (database.replace(mushroom.getId(),mushroom) == null) throw new IllegalArgumentException("no object with such id in DB - cannot be updated");;
+            if (database.replace(mushroom.getId(), mushroom) == null)
+                throw new IllegalArgumentException("no object with such id in DB - cannot be updated");
+            ;
         }
 
-        public void delete(Mushroom mushroom){
+        public void delete(Mushroom mushroom) {
             validateMushroom(mushroom);
             if (mushroom.getId() == null) throw new IllegalArgumentException("no id assigned");
             database.remove(mushroom.getId());
         }
 
         public Mushroom findById(Long id) {
-            if (id == null){
+            if (id == null) {
                 throw new IllegalArgumentException("null id");
             }
             return database.get(id);
         }
 
-        public List<Mushroom> findByMushroomType(MushroomType mushroomType){
+        public List<Mushroom> findByMushroomType(MushroomType mushroomType) {
             List<Mushroom> typedList = new ArrayList<>();
             for (Mushroom m : database.values()) {
                 if (m.getType().equals(mushroomType)) typedList.add(m);
@@ -80,11 +81,11 @@ public class MushroomServiceImplTest {
             return typedList;
         }
 
-        public List<Mushroom> findAll(){
+        public List<Mushroom> findAll() {
             return Collections.unmodifiableList(new ArrayList<>(database.values()));
         }
 
-        public List<Mushroom> findByIntervalOfOccurrence(String fromMonth, String toMonth){
+        public List<Mushroom> findByIntervalOfOccurrence(String fromMonth, String toMonth) {
             String intervalOfOccurrence = fromMonth + " - " + toMonth;
             List<Mushroom> typedList = new ArrayList<>();
             for (Mushroom m : database.values()) {
@@ -109,85 +110,92 @@ public class MushroomServiceImplTest {
     MockDatabase database;
     Mushroom mushroom1, mushroom2, mushroom3;
 
-    private static Mushroom setupMushroom(String name, MushroomType type, String fromM, String toM){
+    private static Mushroom setupMushroom(String name, MushroomType type, String fromM, String toM) {
         Mushroom m = new Mushroom();
         m.setName(name);
-        m.setIntervalOfOccurrence(fromM,toM);
+        m.setIntervalOfOccurrence(fromM, toM);
         m.setType(type);
         return m;
     }
 
     @Before
-    public void setUp(){
+    public void setUp() {
 
         database = new MockDatabase();
-        mushroom1 = setupMushroom("some",MushroomType.UNEDIBLE,"june","july");
-        mushroom2 = setupMushroom("other",MushroomType.POISONOUS,"june","july");
-        mushroom3 = setupMushroom("different",MushroomType.UNEDIBLE,"may","september");
+        mushroom1 = setupMushroom("some", MushroomType.UNEDIBLE, "june", "july");
+        mushroom2 = setupMushroom("other", MushroomType.POISONOUS, "june", "july");
+        mushroom3 = setupMushroom("different", MushroomType.UNEDIBLE, "may", "september");
 
 
-
-        new Expectations(){{
+        new Expectations() {{
             mushroomDao.findById(anyLong);
             result = new Delegate() {
-                Mushroom foo(Long id){
+                Mushroom foo(Long id) {
                     return database.findById(id);
                 }
-            }; minTimes = 0;
+            };
+            minTimes = 0;
 
             mushroomDao.findByMushroomType((MushroomType) any);
             result = new Delegate() {
-                List<Mushroom> foo(MushroomType type){
+                List<Mushroom> foo(MushroomType type) {
                     return database.findByMushroomType(type);
                 }
-            }; minTimes = 0;
+            };
+            minTimes = 0;
 
             mushroomDao.create((Mushroom) any);
             result = new Delegate() {
-                void foo(Mushroom m){
+                void foo(Mushroom m) {
                     database.create(m);
                 }
-            }; minTimes = 0;
+            };
+            minTimes = 0;
 
             mushroomDao.update((Mushroom) any);
             result = new Delegate() {
-                void foo(Mushroom m){
+                void foo(Mushroom m) {
                     database.update(m);
                 }
-            }; minTimes = 0;
+            };
+            minTimes = 0;
 
             mushroomDao.delete((Mushroom) any);
             result = new Delegate() {
-                void foo(Mushroom m){
+                void foo(Mushroom m) {
                     database.delete(m);
                 }
-            }; minTimes = 0;
+            };
+            minTimes = 0;
 
             mushroomDao.findAll();
             result = new Delegate() {
-                List<Mushroom> foo(){
+                List<Mushroom> foo() {
                     return database.findAll();
                 }
-            }; minTimes = 0;
+            };
+            minTimes = 0;
 
             mushroomDao.findByName(anyString);
             result = new Delegate() {
-                Mushroom foo(String name){
+                Mushroom foo(String name) {
                     return database.findByName(name);
                 }
-            }; minTimes = 0;
+            };
+            minTimes = 0;
 
             mushroomDao.findByIntervalOfOccurrence(anyString, anyString);
             result = new Delegate() {
-                List<Mushroom> foo(String fromMonth, String toMonth){
-                    return database.findByIntervalOfOccurrence(fromMonth,toMonth);
+                List<Mushroom> foo(String fromMonth, String toMonth) {
+                    return database.findByIntervalOfOccurrence(fromMonth, toMonth);
                 }
-            }; minTimes = 0;
+            };
+            minTimes = 0;
         }};
     }
 
     @Test
-    public void findAllMushrooms(){
+    public void findAllMushrooms() {
 
         assertThat(service.findAllMushrooms()).isEmpty();
 
@@ -195,11 +203,11 @@ public class MushroomServiceImplTest {
         database.create(mushroom2);
         database.create(mushroom3);
 
-        assertThat(service.findAllMushrooms()).containsExactlyInAnyOrder(mushroom1,mushroom2,mushroom3);
+        assertThat(service.findAllMushrooms()).containsExactlyInAnyOrder(mushroom1, mushroom2, mushroom3);
     }
 
     @Test
-    public void findMushroomById_valid(){
+    public void findMushroomById_valid() {
         database.create(mushroom1);
         database.create(mushroom2);
 
@@ -207,7 +215,7 @@ public class MushroomServiceImplTest {
     }
 
     @Test
-    public void findMushroomById_invalid(){
+    public void findMushroomById_invalid() {
         database.create(mushroom1);
         database.create(mushroom2);
 
@@ -215,7 +223,7 @@ public class MushroomServiceImplTest {
     }
 
     @Test
-    public void findMushroomById_null(){
+    public void findMushroomById_null() {
         database.create(mushroom1);
         database.create(mushroom2);
 
@@ -223,7 +231,7 @@ public class MushroomServiceImplTest {
     }
 
     @Test
-    public void FindMushroomByName_null(){
+    public void FindMushroomByName_null() {
 
         database.create(mushroom1);
         database.create(mushroom2);
@@ -232,7 +240,7 @@ public class MushroomServiceImplTest {
     }
 
     @Test
-    public void FindMushroomByName_nonexistent(){
+    public void FindMushroomByName_nonexistent() {
 
         database.create(mushroom1);
         database.create(mushroom2);
@@ -241,7 +249,7 @@ public class MushroomServiceImplTest {
     }
 
     @Test
-    public void FindMushroomByName_valid(){
+    public void FindMushroomByName_valid() {
 
         database.create(mushroom1);
         database.create(mushroom2);
@@ -251,7 +259,7 @@ public class MushroomServiceImplTest {
     }
 
     @Test
-    public void FindMushroomByName_emptyString(){
+    public void FindMushroomByName_emptyString() {
 
         database.create(mushroom1);
         database.create(mushroom2);
@@ -260,27 +268,27 @@ public class MushroomServiceImplTest {
     }
 
     @Test
-    public void findByIntervalOfOccurrence_oneResut(){
+    public void findByIntervalOfOccurrence_oneResut() {
         database.create(mushroom1);
         database.create(mushroom2);
         database.create(mushroom3);
-        assertThat(service.findByIntervalOfOccurrence("may","september")).containsExactlyInAnyOrder(mushroom3);
+        assertThat(service.findByIntervalOfOccurrence("may", "september")).containsExactlyInAnyOrder(mushroom3);
     }
 
     @Test
-    public void findByIntervalOfOccurrence_multipleResults(){
+    public void findByIntervalOfOccurrence_multipleResults() {
         database.create(mushroom1);
         database.create(mushroom2);
         database.create(mushroom3);
-        assertThat(service.findByIntervalOfOccurrence("june","july")).containsExactlyInAnyOrder(mushroom1,mushroom2);
+        assertThat(service.findByIntervalOfOccurrence("june", "july")).containsExactlyInAnyOrder(mushroom1, mushroom2);
     }
 
     @Test
-    public void findByIntervalOfOccurrence_noResults(){
+    public void findByIntervalOfOccurrence_noResults() {
         database.create(mushroom1);
         database.create(mushroom2);
         database.create(mushroom3);
-        assertThat(service.findByIntervalOfOccurrence("july","september")).isEmpty();
+        assertThat(service.findByIntervalOfOccurrence("july", "september")).isEmpty();
     }
 
     @Test
@@ -293,37 +301,37 @@ public class MushroomServiceImplTest {
     }
 
     @Test
-    public void createMushroom_preexisting(){
+    public void createMushroom_preexisting() {
 
         mushroom2.setId(2L);
-        assertThatThrownBy(()->service.createMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
+        assertThatThrownBy(() -> service.createMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void createMushroom_conflicting(){
+    public void createMushroom_conflicting() {
 
         database.create(mushroom1);
 
         mushroom2.setId(mushroom1.getId());
-        assertThatThrownBy(()->service.createMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
+        assertThatThrownBy(() -> service.createMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void createMushroom_null(){
+    public void createMushroom_null() {
 
-        assertThatThrownBy(()->service.createMushroom(null)).isInstanceOf(DataAccessException.class);
+        assertThatThrownBy(() -> service.createMushroom(null)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void deleteMushroom_noID(){
+    public void deleteMushroom_noID() {
 
         database.create(mushroom1);
 
-        assertThatThrownBy(()->service.deleteMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
+        assertThatThrownBy(() -> service.deleteMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void deleteMushroom_nonexistentID(){
+    public void deleteMushroom_nonexistentID() {
 
         database.create(mushroom1);
 
@@ -334,7 +342,7 @@ public class MushroomServiceImplTest {
     }
 
     @Test
-    public void deleteMushroom_correct(){
+    public void deleteMushroom_correct() {
 
         database.create(mushroom1);
 
@@ -344,34 +352,34 @@ public class MushroomServiceImplTest {
     }
 
     @Test
-    public void deleteMushroom_null(){
+    public void deleteMushroom_null() {
 
         database.create(mushroom1);
 
-        assertThatThrownBy(()->service.deleteMushroom(null)).isInstanceOf(DataAccessException.class);
+        assertThatThrownBy(() -> service.deleteMushroom(null)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void updateMushroom_nullID(){
+    public void updateMushroom_nullID() {
 
         database.create(mushroom1);
         database.create(mushroom3);
 
-        assertThatThrownBy(()->service.updateMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
+        assertThatThrownBy(() -> service.updateMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void updateMushroom_nonexistentID(){
+    public void updateMushroom_nonexistentID() {
 
         database.create(mushroom1);
         database.create(mushroom3);
 
         mushroom2.setId(1234L);
-        assertThatThrownBy(()->service.updateMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
+        assertThatThrownBy(() -> service.updateMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void updateMushroom_valid(){
+    public void updateMushroom_valid() {
 
         database.create(mushroom1);
         database.create(mushroom3);
@@ -384,12 +392,12 @@ public class MushroomServiceImplTest {
     }
 
     @Test
-    public void updateMushroom_null(){
+    public void updateMushroom_null() {
 
         database.create(mushroom1);
         database.create(mushroom3);
 
-        assertThatThrownBy(()->service.updateMushroom(null)).isInstanceOf(DataAccessException.class);
+        assertThatThrownBy(() -> service.updateMushroom(null)).isInstanceOf(DataAccessException.class);
     }
 
 }

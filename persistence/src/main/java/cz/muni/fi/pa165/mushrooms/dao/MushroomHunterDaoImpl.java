@@ -87,7 +87,7 @@ public class MushroomHunterDaoImpl implements MushroomHunterDao {
         }
         try {
             return em.createQuery("select mh from MushroomHunter mh where mh.userNickname like :userNickname", MushroomHunter.class)
-                    .setParameter("userNickname",  userNickname).getSingleResult();
+                    .setParameter("userNickname", userNickname).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }

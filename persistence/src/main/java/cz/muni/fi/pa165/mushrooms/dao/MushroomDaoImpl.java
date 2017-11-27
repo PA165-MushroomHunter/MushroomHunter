@@ -95,8 +95,8 @@ public class MushroomDaoImpl implements MushroomDao {
 
         String[] monthInterval = new String[12];
         int j = 0;
-        for(int i=0; i<months.length; i++){
-            if (indexFrom<=i && indexTo>=i){
+        for (int i = 0; i < months.length; i++) {
+            if (indexFrom <= i && indexTo >= i) {
                 monthInterval[j++] = months[i];
             }
         }

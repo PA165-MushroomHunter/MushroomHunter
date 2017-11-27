@@ -200,23 +200,24 @@ public class VisitDaoTest extends AbstractTransactionalJUnit4SpringContextTests 
     public void delete_nullVisit() throws Exception {
         assertThatThrownBy(() -> visitDao.delete(null)).hasRootCauseInstanceOf(IllegalArgumentException.class);
     }
-/* fails on ConstraintViolationException
-    @Test
-    public void delete_nonExistingVisit() {
-        int sizeBeforeCreate = visitDao.findAll().size();
 
-        Visit testVisit = new Visit();
-        testVisit.setHunter(mushroomHunter1);
-        testVisit.setForest(forest1);
-        testVisit.setDate(LocalDate.of(2017, 2, 5));
+    /* fails on ConstraintViolationException
+        @Test
+        public void delete_nonExistingVisit() {
+            int sizeBeforeCreate = visitDao.findAll().size();
 
-        visitDao.delete(testVisit);
-        em.flush();
+            Visit testVisit = new Visit();
+            testVisit.setHunter(mushroomHunter1);
+            testVisit.setForest(forest1);
+            testVisit.setDate(LocalDate.of(2017, 2, 5));
 
-        assertThat(visitDao.findAll().size()).isEqualTo(sizeBeforeCreate);
-        assertThat(visitDao.findAll()).containsExactlyInAnyOrder(visit1, visit2);
-    }
-*/
+            visitDao.delete(testVisit);
+            em.flush();
+
+            assertThat(visitDao.findAll().size()).isEqualTo(sizeBeforeCreate);
+            assertThat(visitDao.findAll()).containsExactlyInAnyOrder(visit1, visit2);
+        }
+    */
     @Test
     public void findById_nullId() throws Exception {
         assertThatThrownBy(() -> visitDao.findById(null)).hasRootCauseExactlyInstanceOf(IllegalArgumentException.class);

@@ -66,27 +66,27 @@ public class ForestFacadeImplNoMockTest extends AbstractTransactionalJUnit4Sprin
     }
 
     @Test
-    public void findById(){
+    public void findById() {
         assertThat(facade.findById(forest1.getId())).isEqualToComparingFieldByField(forestDTO1);
         assertThat(facade.findById(forest2.getId())).isEqualToComparingFieldByField(forestDTO2);
         assertThat(facade.findById(123L)).isNull();
     }
 
     @Test
-    public void findByName(){
+    public void findByName() {
         assertThat(facade.findByName(forest1.getName())).isEqualToComparingFieldByField(forestDTO1);
         assertThat(facade.findByName(forest2.getName())).isEqualToComparingFieldByField(forestDTO2);
         assertThat(facade.findByName("unknown")).isNull();
     }
 
     @Test
-    public void delete(){
+    public void delete() {
         facade.deleteForest(forestDTO1.getId());
         assertThat(facade.findById(forestDTO1.getId())).isNull();
     }
 
     @Test
-    public void update(){
+    public void update() {
         String desc = "New description";
         forestDTO1.setDescription(desc);
         facade.updateForest(forestDTO1);
@@ -97,7 +97,7 @@ public class ForestFacadeImplNoMockTest extends AbstractTransactionalJUnit4Sprin
     }
 
     @Test
-    public void create(){
+    public void create() {
         ForestDTO newForest = new ForestDTO();
         newForest.setDescription("Elves everywhere");
         newForest.setName("Lothlórien");

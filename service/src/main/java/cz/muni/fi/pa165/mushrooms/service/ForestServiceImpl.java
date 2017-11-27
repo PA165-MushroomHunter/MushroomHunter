@@ -88,7 +88,7 @@ public class ForestServiceImpl implements ForestService {
         }
     }
 
-    private static class ForestCountComparator implements Comparator<Map.Entry<Forest, Integer>>{
+    private static class ForestCountComparator implements Comparator<Map.Entry<Forest, Integer>> {
         public int compare(Map.Entry<Forest, Integer> e1, Map.Entry<Forest, Integer> e2) {
 
             return e1.getValue().compareTo(e2.getValue());
@@ -96,32 +96,32 @@ public class ForestServiceImpl implements ForestService {
     }
 
     @Override
-    public List<Map.Entry<Forest,Integer>> findAllForestsWithMushroom(Mushroom mushroomEntity) throws DataAccessException {
+    public List<Map.Entry<Forest, Integer>> findAllForestsWithMushroom(Mushroom mushroomEntity) throws DataAccessException {
         //this is not data manipulation problem, not throwing DataAccessException is OK
         if (mushroomEntity == null) throw new IllegalArgumentException("null mushroom entity");
         List<Visit> visits = visitService.findAllVisits();
         List<Visit> visitsWithMushroom = new ArrayList<>();
         for (Visit visit : visits) {
-            if (visit.getMushrooms().contains(mushroomEntity)){
+            if (visit.getMushrooms().contains(mushroomEntity)) {
                 visitsWithMushroom.add(visit);
             }
         }
 
         //Simulating multiset behavior
         // forest is the key, integer tells how many times the forest occurred in visits
-        Map<Forest, Integer>  forestCount = new HashMap<>();
+        Map<Forest, Integer> forestCount = new HashMap<>();
         for (Visit visit : visitsWithMushroom) {
             Forest forest = visit.getForest();
-            if(forestCount.containsKey(forest)){
+            if (forestCount.containsKey(forest)) {
                 Integer count = forestCount.get(forest);
                 count++;
-                forestCount.replace(forest,count);
+                forestCount.replace(forest, count);
             } else {
-                forestCount.put(forest,1);
+                forestCount.put(forest, 1);
             }
         }
 
-        List<Map.Entry<Forest,Integer>> sortedForests = new ArrayList<>();
+        List<Map.Entry<Forest, Integer>> sortedForests = new ArrayList<>();
 
         if (forestCount.size() == 0) return sortedForests;
 
@@ -130,8 +130,7 @@ public class ForestServiceImpl implements ForestService {
         queue.addAll(forestCount.entrySet());
 
 
-
-        for (Map.Entry<Forest, Integer> entry; (entry = queue.poll())!=null;) {
+        for (Map.Entry<Forest, Integer> entry; (entry = queue.poll()) != null; ) {
             sortedForests.add(entry);
         }
 

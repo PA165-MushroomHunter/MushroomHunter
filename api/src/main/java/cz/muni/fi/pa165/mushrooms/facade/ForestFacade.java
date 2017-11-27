@@ -35,7 +35,7 @@ public interface ForestFacade {
      *
      * @param id of a Forest which you want to delete
      * @throws IllegalArgumentException on null Forest given as a parameter
-     *      or if the forest given as a parameter doesn't exist in the database
+     *                                  or if the forest given as a parameter doesn't exist in the database
      */
     void deleteForest(Long id);
 
@@ -44,9 +44,8 @@ public interface ForestFacade {
      * You are not able to update an id of the forest.
      *
      * @param forest is a Forest to be updated in a database
-     *
      * @throws IllegalArgumentException on null forest given as a parameter
-     *      or if the forest given as a parameter doesn't exist in the database
+     *                                  or if the forest given as a parameter doesn't exist in the database
      */
     void updateForest(ForestDTO forest);
 

@@ -94,7 +94,7 @@ public class VisitServiceTest extends AbstractTransactionalJUnit4SpringContextTe
                     if (visit.getId() != null) {
                         throw new IllegalArgumentException("already in db");
                     }
-                    if (!checkVisitValidity(visit)){
+                    if (!checkVisitValidity(visit)) {
                         throw new IllegalArgumentException("invalid entity");
                     }
                     if (checkVisitDuplicity(persistedVisits, visit)) {
@@ -134,7 +134,7 @@ public class VisitServiceTest extends AbstractTransactionalJUnit4SpringContextTe
                     if (checkVisitDuplicity(persistedVisits, visit)) {
                         throw new IllegalArgumentException("duplicate after update");
                     }
-                    if (!checkVisitValidity(visit)){
+                    if (!checkVisitValidity(visit)) {
                         throw new IllegalArgumentException("invalid entity");
                     }
                     persistedVisits.replace(visit.getId(), visit);
@@ -313,7 +313,7 @@ public class VisitServiceTest extends AbstractTransactionalJUnit4SpringContextTe
         assertThat(persistedVisits.values()).containsExactlyInAnyOrder(visit1, visit2);
         service.deleteVisit(visit1);
         assertThat(persistedVisits.values()).containsExactlyInAnyOrder(visit2);
-        
+
         assertThatThrownBy(() -> service.deleteVisit(visit1)).isInstanceOf(DataAccessException.class);
     }
 
@@ -335,7 +335,7 @@ public class VisitServiceTest extends AbstractTransactionalJUnit4SpringContextTe
     }
 
     @Test
-    public void updateVisit_valid_addMushroom(){ //TODO: remove mushroom?
+    public void updateVisit_valid_addMushroom() {
         Mushroom newMushroom = createMushroom("New", MushroomType.UNEDIBLE, "October", "October");
         visit1.addMushroom(newMushroom);
         service.updateVisit(visit1);
@@ -345,34 +345,34 @@ public class VisitServiceTest extends AbstractTransactionalJUnit4SpringContextTe
 
 
     @Test
-    public void updateVisit_invalid_nullForest(){
+    public void updateVisit_invalid_nullForest() {
         visit1.setForest(null);
-        assertThatThrownBy(()-> service.updateVisit(visit1)).isInstanceOf(DataAccessException.class);
+        assertThatThrownBy(() -> service.updateVisit(visit1)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void updateVisit_invalid_nullHunter(){
+    public void updateVisit_invalid_nullHunter() {
         visit1.setHunter(null);
-        assertThatThrownBy(()-> service.updateVisit(visit1)).isInstanceOf(DataAccessException.class);
+        assertThatThrownBy(() -> service.updateVisit(visit1)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void updateVisit_invalid_nullDate(){
+    public void updateVisit_invalid_nullDate() {
         visit1.setDate(null);
-        assertThatThrownBy(()-> service.updateVisit(visit1)).isInstanceOf(DataAccessException.class);
+        assertThatThrownBy(() -> service.updateVisit(visit1)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void updateVisit_invalid_duplicateVisit(){
+    public void updateVisit_invalid_duplicateVisit() {
         visit1.setHunter(visit2.getHunter());
         visit1.setForest(visit2.getForest());
         visit1.setDate(visit2.getDate());
-        assertThatThrownBy(()-> service.updateVisit(visit1)).isInstanceOf(DataAccessException.class);
+        assertThatThrownBy(() -> service.updateVisit(visit1)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void updateVisit_invalid_nullVisit(){
-        assertThatThrownBy(()-> service.updateVisit(null)).isInstanceOf(DataAccessException.class);
+    public void updateVisit_invalid_nullVisit() {
+        assertThatThrownBy(() -> service.updateVisit(null)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
@@ -392,8 +392,8 @@ public class VisitServiceTest extends AbstractTransactionalJUnit4SpringContextTe
     }
 
     @Test
-    public void getVisitsByHunter_nullHunter(){
-        assertThatThrownBy(()-> service.getVisitsByHunter(null)).isInstanceOf(DataAccessException.class);
+    public void getVisitsByHunter_nullHunter() {
+        assertThatThrownBy(() -> service.getVisitsByHunter(null)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
@@ -413,8 +413,8 @@ public class VisitServiceTest extends AbstractTransactionalJUnit4SpringContextTe
     }
 
     @Test
-    public void getVisitsByForest_nullForest(){
-        assertThatThrownBy(()-> service.getVisitsByForest(null)).isInstanceOf(DataAccessException.class);
+    public void getVisitsByForest_nullForest() {
+        assertThatThrownBy(() -> service.getVisitsByForest(null)).isInstanceOf(DataAccessException.class);
     }
 
 
@@ -436,8 +436,8 @@ public class VisitServiceTest extends AbstractTransactionalJUnit4SpringContextTe
     }
 
     @Test
-    public void getVisitsMushroom_nullMushroom(){
-        assertThatThrownBy(()-> service.getVisitsByMushroom(null)).isInstanceOf(DataAccessException.class);
+    public void getVisitsMushroom_nullMushroom() {
+        assertThatThrownBy(() -> service.getVisitsByMushroom(null)).isInstanceOf(DataAccessException.class);
     }
 
 }

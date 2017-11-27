@@ -3,8 +3,6 @@ package cz.muni.fi.pa165.mushrooms.dto;
 import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
 
 /**
- * TODO: create  javadoc
- *
  * @author Buvko
  */
 public class MushroomDTO {

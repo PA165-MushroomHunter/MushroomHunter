@@ -5,8 +5,6 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 /**
- * TODO: create  javadoc
- *
  * @author Buvko
  */
 public class VisitCreateDTO {

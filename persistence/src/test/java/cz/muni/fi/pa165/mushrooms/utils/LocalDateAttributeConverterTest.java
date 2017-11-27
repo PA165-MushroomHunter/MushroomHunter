@@ -20,7 +20,7 @@ public class LocalDateAttributeConverterTest {
     private LocalDateAttributeConverter converter;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         localDate = LocalDate.of(2017, Month.SEPTEMBER, 1);
         sqlDate = Date.valueOf("2017-09-01");
         converter = new LocalDateAttributeConverter();
@@ -32,7 +32,7 @@ public class LocalDateAttributeConverterTest {
     }
 
     @Test
-    public void convertToDatabaseColumnNullInput(){
+    public void convertToDatabaseColumnNullInput() {
         assertThat(converter.convertToDatabaseColumn(null)).isNull();
     }
 
@@ -42,7 +42,7 @@ public class LocalDateAttributeConverterTest {
     }
 
     @Test
-    public void convertToEntityAttributeNullInput(){
+    public void convertToEntityAttributeNullInput() {
         assertThat(converter.convertToEntityAttribute(null)).isNull();
     }
 }

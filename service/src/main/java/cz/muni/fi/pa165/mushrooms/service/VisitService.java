@@ -10,8 +10,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * TODO: create  javadoc
- *
  * @author Buvko
  */
 public interface VisitService {
@@ -37,7 +35,7 @@ public interface VisitService {
      * Finds Visits by its time interval.
      *
      * @param from time from search criteria
-     * @param to time to search criteria
+     * @param to   time to search criteria
      * @return Visits within given time interval
      * @throws DataAccessException on invalid access
      */

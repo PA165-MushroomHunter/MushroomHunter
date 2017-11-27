@@ -84,11 +84,6 @@ public class ForestServiceImplTest {
             return Collections.unmodifiableList(new ArrayList<>(database.values()));
         }
 
-        public List<Forest> findAllForestsWithMushroom(Mushroom mushroomEntity) throws DataAccessException {
-            return null; //TODO
-        }
-
-
     }
 
     private MockDatabase database;
@@ -113,15 +108,15 @@ public class ForestServiceImplTest {
         forest2 = setupForest("Negativos", "dirty but full of mushrooms");
         forest3 = setupForest("Lohor", "never visited by man");
 
-        hunter = createHunter("some", "person","anonymous",false);
-        visit1 = createVisit(hunter,forest1,null);
-        visit2 = createVisit(hunter,forest1,null);
-        visit3 = createVisit(hunter,forest1,null);
-        visit4 = createVisit(hunter,forest2,null);
-        visit5 = createVisit(hunter,forest2,null);
-        visit6 = createVisit(hunter,forest3,null);
+        hunter = createHunter("some", "person", "anonymous", false);
+        visit1 = createVisit(hunter, forest1, null);
+        visit2 = createVisit(hunter, forest1, null);
+        visit3 = createVisit(hunter, forest1, null);
+        visit4 = createVisit(hunter, forest2, null);
+        visit5 = createVisit(hunter, forest2, null);
+        visit6 = createVisit(hunter, forest3, null);
 
-        shroom = createMushroom("Shroom", MushroomType.UNEDIBLE,"june","july");
+        shroom = createMushroom("Shroom", MushroomType.UNEDIBLE, "june", "july");
         visit1.addMushroom(shroom);
         visit2.addMushroom(shroom);
         visit3.addMushroom(shroom);
@@ -192,7 +187,8 @@ public class ForestServiceImplTest {
                     visits.add(visit6);
                     return visits;
                 }
-            }; minTimes = 0;
+            };
+            minTimes = 0;
         }};
     }
 
@@ -379,8 +375,8 @@ public class ForestServiceImplTest {
     }
 
     @Test
-    public void findAllForestsWithMushroom_valid(){
-        List<Map.Entry<Forest,Integer>> orderedList = service.findAllForestsWithMushroom(shroom);
+    public void findAllForestsWithMushroom_valid() {
+        List<Map.Entry<Forest, Integer>> orderedList = service.findAllForestsWithMushroom(shroom);
         assertThat(orderedList).hasSize(3); //cannot check for elements directly - Map.Entry cannot be instantiated
         assertThat(orderedList.get(0).getKey()).isEqualTo(forest1);
         assertThat(orderedList.get(1).getKey()).isEqualTo(forest2);
@@ -392,14 +388,14 @@ public class ForestServiceImplTest {
     }
 
     @Test
-    public void findAllForestsWithMushroom_empty(){
-        List<Map.Entry<Forest,Integer>> orderedList = service.findAllForestsWithMushroom(createMushroom("other",MushroomType.POISONOUS, "may","aug"));
+    public void findAllForestsWithMushroom_empty() {
+        List<Map.Entry<Forest, Integer>> orderedList = service.findAllForestsWithMushroom(createMushroom("other", MushroomType.POISONOUS, "may", "aug"));
         assertThat(orderedList).isEmpty();
     }
 
     @Test
-    public void findAllForestsWithMushroom_null(){
-        assertThatThrownBy(()->service.findAllForestsWithMushroom(null)).isInstanceOf(IllegalArgumentException.class);
+    public void findAllForestsWithMushroom_null() {
+        assertThatThrownBy(() -> service.findAllForestsWithMushroom(null)).isInstanceOf(IllegalArgumentException.class);
     }
 
 }

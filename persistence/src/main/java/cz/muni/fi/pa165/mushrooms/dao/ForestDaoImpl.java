@@ -55,7 +55,7 @@ public class ForestDaoImpl implements ForestDao {
         }
         try {
             return em.createQuery("select f from Forest f where f.name like :name", Forest.class)
-                    .setParameter("name", name ).getSingleResult();
+                    .setParameter("name", name).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }

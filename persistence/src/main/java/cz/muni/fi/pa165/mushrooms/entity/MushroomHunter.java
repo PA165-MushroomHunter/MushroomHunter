@@ -115,29 +115,29 @@ public class MushroomHunter {
 
     /**
      * Removes a Visit from this Forest and updates the appropriate MushroomHunter.
+     *
      * @param toRemove
      */
-    public void removeVisit(Visit toRemove){
+    public void removeVisit(Visit toRemove) {
         boolean removedHunter = visits.remove(toRemove);
-        if (!removedHunter){
+        if (!removedHunter) {
             throw new IllegalArgumentException("Attempt to remove a visit not registered in hunter.");
         }
         boolean removedForest = toRemove.getForest().removeVisitOnlyHere(toRemove);
-        if (!removedForest){
+        if (!removedForest) {
             throw new IllegalArgumentException("Attempt to remove a visit not registered in forest.");
         }
     }
-    //TODO: cascade, log info
-    // Appropriate reference is set using this method when attributes of Visit are set
 
-    void addVisit(Visit newVisit){
+    // Appropriate reference is set using this method when attributes of Visit are set
+    void addVisit(Visit newVisit) {
         boolean added = visits.add(newVisit);
-        if (!added){
+        if (!added) {
             throw new IllegalArgumentException("Attempt to add duplicate visit to hunter.");
         }
     }
 
-    boolean removeVisitOnlyHere(Visit toRemove){
+    boolean removeVisitOnlyHere(Visit toRemove) {
         return visits.remove(toRemove);
     }
 

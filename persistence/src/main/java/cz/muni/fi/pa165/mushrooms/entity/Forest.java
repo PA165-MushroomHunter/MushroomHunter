@@ -65,26 +65,26 @@ public class Forest {
         return Collections.unmodifiableList(visits);
     }
 
-    public void removeVisit(Visit toRemove){
+    public void removeVisit(Visit toRemove) {
         boolean removedForest = visits.remove(toRemove);
-        if (!removedForest){
+        if (!removedForest) {
             throw new IllegalArgumentException("Attempt to remove a visit not registered in forest.");
         }
         boolean removedHunter = toRemove.getHunter().removeVisitOnlyHere(toRemove);
-        if (!removedHunter){
+        if (!removedHunter) {
             throw new IllegalArgumentException("Attempt to remove a visit not registered in hunter.");
         }
     }
 
     // Appropriate reference is set using this method when attributes of Visit are set
-    void addVisit(Visit newVisit){
+    void addVisit(Visit newVisit) {
         boolean added = visits.add(newVisit);
-        if (!added){
+        if (!added) {
             throw new IllegalArgumentException("Attempt to add duplicate visit to Forest.");
         }
     }
 
-    boolean removeVisitOnlyHere(Visit toRemove){
+    boolean removeVisitOnlyHere(Visit toRemove) {
         return visits.remove(toRemove);
     }
 

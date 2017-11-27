@@ -21,16 +21,16 @@ public interface ForestDao {
     /**
      * Takes an object of type Forest and creates an entry in a database
      *
-     * @throws IllegalArgumentException on null forest given as an parameter
      * @param forest non-null object to be created in a database
+     * @throws IllegalArgumentException on null forest given as an parameter
      */
     void create(Forest forest);
 
     /**
      * Takes an object of type Forest and update an object in a database
      *
-     * @throws IllegalArgumentException on null forest given as an parameter
      * @param forest non-null object to be updated in a database
+     * @throws IllegalArgumentException on null forest given as an parameter
      */
     void update(Forest forest);
 
@@ -51,9 +51,9 @@ public interface ForestDao {
     /**
      * Takes unique name of Forest and returns a corresponding entity if found
      *
-     * @throws IllegalArgumentException on null forest name given as an parameter
      * @param name non-null string representing name
      * @return forest with given name if exists, null otherwise
+     * @throws IllegalArgumentException on null forest name given as an parameter
      */
     Forest findByName(String name);
 

@@ -59,7 +59,7 @@ public class VisitFacadeImpl implements VisitFacade {
 
         try {
             newVisit.setDate(LocalDate.parse(visit.getDate()));
-        } catch (DateTimeParseException e){
+        } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Visit date has to be in format of YYYY-MM-DD");
         }
         newVisit.setForest(forest);
@@ -102,7 +102,7 @@ public class VisitFacadeImpl implements VisitFacade {
 
         try {
             entityVisit.setDate(LocalDate.parse(visit.getDate()));
-        } catch (DateTimeParseException e){
+        } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Visit date has to be in format of YYYY-MM-DD");
         }
         entityVisit.setHunter(hunter);
