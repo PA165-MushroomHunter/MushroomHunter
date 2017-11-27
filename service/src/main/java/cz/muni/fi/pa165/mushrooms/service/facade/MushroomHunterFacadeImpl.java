@@ -9,6 +9,7 @@ import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
 import cz.muni.fi.pa165.mushrooms.facade.MushroomHunterFacade;
 import cz.muni.fi.pa165.mushrooms.service.BeanMappingService;
 import cz.muni.fi.pa165.mushrooms.service.MushroomHunterService;
+import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityOperationServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,12 +34,7 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
     @Override
     public MushroomHunterDTO findHunterById(Long hunterId) {
         MushroomHunter hunter = service.findHunterById(hunterId);
-        if (hunter == null) {
-            return null;
-        }
-        MushroomHunterDTO mapped = beanMappingService.mapTo(hunter, MushroomHunterDTO.class);
-        return mapped;
-        //return (hunter == null) ? null : beanMappingService.mapTo(hunter, MushroomHunterDTO.class);
+        return (hunter == null) ? null : beanMappingService.mapTo(hunter, MushroomHunterDTO.class);
     }
 
     @Override
@@ -50,6 +46,7 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
     @Override
     public MushroomHunterDTO registerHunter(MushroomHunterCreateDTO hunter) {
         //manually create a new object to pass to service
+        // could use bean mapping service
         MushroomHunter newEntity = new MushroomHunter();
         newEntity.setUserNickname(hunter.getUserNickname());
         newEntity.setFirstName(hunter.getFirstName());
@@ -74,7 +71,6 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
 
     @Override
     public MushroomHunterDTO updateHunter(MushroomHunterUpdateDTO hunter) {
-        //TODO: check Dozer behaviour
         MushroomHunter entity = service.findHunterById(hunter.getId());
         entity.setSurname(hunter.getSurname());
         entity.setFirstName(hunter.getFirstName());
@@ -90,7 +86,7 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
     public MushroomHunterDTO updatePassword(MushroomHunterUpdatePasswordDTO hunter) {
         MushroomHunter entity = service.findHunterById(hunter.getId());
         if (!service.updatePassword(entity, hunter.getOldPassword(), hunter.getNewPassword())) {
-            //throw new InvalidPasswordException(); TODO
+            throw new EntityOperationServiceException("Invalid hunter password");
         }
 
         return findHunterById(hunter.getId());
