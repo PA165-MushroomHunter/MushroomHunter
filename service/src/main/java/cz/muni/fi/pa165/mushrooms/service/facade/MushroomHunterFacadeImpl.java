@@ -103,7 +103,7 @@ public class MushroomHunterFacadeImpl implements MushroomHunterFacade {
 
     @Override
     public boolean authenticate(MushroomHunterAuthenticateDTO hunter) {
-        return service.authenticate(service.findHunterById(hunter.getId()), hunter.getPassword());
+        return service.authenticate(service.findHunterByNickname(hunter.getNickname()), hunter.getPassword());
     }
 
     @Override

@@ -96,9 +96,10 @@ public class MushroomHunterServiceImpl implements MushroomHunterService {
     }
 
     @Override
-    public boolean authenticate(MushroomHunter hunter, String password) throws DataAccessException { //TODO: get fresh copy from db
+    public boolean authenticate(MushroomHunter hunter, String password) throws DataAccessException {
         try {
-            return validatePassword(password, hunter.getPasswordHash());
+            MushroomHunter mh = findHunterById(hunter.getId()); // fresh entity to be safe
+            return validatePassword(password, mh.getPasswordHash());
         } catch (Throwable e) {
             throw new EntityOperationServiceException("hunter", "authenticate", hunter, e);
         }

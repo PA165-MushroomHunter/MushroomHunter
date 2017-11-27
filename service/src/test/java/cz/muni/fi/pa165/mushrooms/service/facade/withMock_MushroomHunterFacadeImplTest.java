@@ -245,7 +245,7 @@ public class withMock_MushroomHunterFacadeImplTest extends AbstractTransactional
     @Test
     public void authenticate() {
         MushroomHunterAuthenticateDTO auth = new MushroomHunterAuthenticateDTO();
-        auth.setId(hunter1.getId());
+        auth.setNickname(hunter1.getUserNickname());
         auth.setPassword(hunter1.getPasswordHash());
         assertThat(facade.authenticate(auth)).isTrue();
     }

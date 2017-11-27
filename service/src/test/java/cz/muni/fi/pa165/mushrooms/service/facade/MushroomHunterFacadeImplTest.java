@@ -154,7 +154,7 @@ public class MushroomHunterFacadeImplTest extends AbstractTransactionalJUnit4Spr
     @Test
     public void authenticate() {
         MushroomHunterAuthenticateDTO auth = new MushroomHunterAuthenticateDTO();
-        auth.setId(hunter1.getId());
+        auth.setNickname(hunter1.getUserNickname());
         auth.setPassword("armor");
         assertThat(facade.authenticate(auth)).isTrue();
     }

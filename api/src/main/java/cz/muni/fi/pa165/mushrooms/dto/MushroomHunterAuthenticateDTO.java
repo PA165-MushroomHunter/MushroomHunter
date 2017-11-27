@@ -9,28 +9,26 @@ import javax.validation.constraints.Size;
  * @author bkompis
  */
 public class MushroomHunterAuthenticateDTO {
-    private Long id;
+    @NotNull
+    @Size(min = 3, max = 50)
+    private String nickname;
     @NotNull
     @Size(min = 8, max = 150)
     private String unencryptedPassword;
 
-    public Long getId()
-    {
-        return id;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setId(Long id)
-    {
-        this.id = id;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
-    public String getPassword()
-    {
+    public String getPassword() {
         return unencryptedPassword;
     }
 
-    public void setPassword(String password)
-    {
+    public void setPassword(String password) {
         this.unencryptedPassword = password;
     }
 }
