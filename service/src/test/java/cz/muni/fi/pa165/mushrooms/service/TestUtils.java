@@ -38,6 +38,12 @@ class TestUtils {
         return hunter;
     }
 
+    public static MushroomHunter createHunter(String firstName, String surname, String userNickname, String passHash ,boolean admin) {
+        MushroomHunter hunter = createHunter(firstName, surname, userNickname, admin);
+        hunter.setPasswordHash(passHash);
+        return hunter;
+    }
+
     public static Mushroom createMushroom(String name, MushroomType type, String from, String to){
         Mushroom mushroom = new Mushroom();
         mushroom.setName(name);

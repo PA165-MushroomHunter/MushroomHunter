@@ -2,6 +2,7 @@ package cz.muni.fi.pa165.mushrooms.service;
 
 import cz.muni.fi.pa165.mushrooms.dao.MushroomHunterDao;
 import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
+import cz.muni.fi.pa165.mushrooms.service.config.ServiceConfiguration;
 import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityFindServiceException;
 import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityOperationServiceException;
 import cz.muni.fi.pa165.mushrooms.validation.PersistenceSampleApplicationContext;
@@ -19,13 +20,16 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 
 import java.util.*;
 
+import static cz.muni.fi.pa165.mushrooms.service.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Created by Matúš on 26.11.2017.
+ * Test class for MushroomHunterService
+ *
+ * @author Buvko
  */
-@ContextConfiguration(classes = PersistenceSampleApplicationContext.class)
+@ContextConfiguration(classes = ServiceConfiguration.class)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4SpringContextTests  {
 
@@ -42,35 +46,21 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
 
     private Map<Long, MushroomHunter> persistedMushroomHunter = new HashMap<>();
     // stores 'database' size
-    private long dbCounter;
+    private long dbCounter = 1;
+    int persistedMushroomHunterPreTest;
 
-    //TODO: move to TestUtils
-    private static MushroomHunter createMushroomHunter(String firstName, String surname, String userNickname) {
-        MushroomHunter hunter = new MushroomHunter();
-        hunter.setFirstName(firstName);
-        hunter.setSurname(surname);
-        hunter.setUserNickname(userNickname);
-        hunter.setPersonalInfo("Mushroom hunter " + userNickname + " - " + firstName + " " + surname);
-        return hunter;
-    }
 
     @Before
     public void setUp() {
         // note: for tests here, password hash and password are the same
-        nonPersistedHunter = createMushroomHunter("Alphonse", "Elric", "theGoodGuy");
+        nonPersistedHunter = createHunter("Alphonse", "Elric", "theGoodGuy" , "smt5udp", false);
         nonPersistedHunter.setPasswordHash("armor");
-        nonPersistedHunter.setId(35L);
 
-        persistedHunter = createMushroomHunter("Edward", "Elric", "fullmetal");
+        persistedHunter = createHunter("Edward", "Elric", "fullmetal", "buw9fww", true);
         persistedHunter.setPasswordHash("winry");
-        persistedHunter.setAdmin(true);
 
-        persistedHunter2 = createMushroomHunter("Vlad", "Third", "theImpaler");
+        persistedHunter2 = createHunter("Vlad", "Third", "theImpaler", "thu3hhbm",false);
         persistedHunter2.setPasswordHash("badGuy");
-        persistedHunter2.setAdmin(false);
-
-        newHunter = createMushroomHunter("Jan", "Jakub", "J2J");
-        newHunter.setPasswordHash("end6");
 
         new Expectations() {{
             mushroomHunterDao.create((MushroomHunter) any);
@@ -91,7 +81,7 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
                     if (mushroomHunter.getUserNickname() == null){
                         throw new IllegalArgumentException("null nickname on creating mushroom hunter");
                     }
-                    if (TestUtils.checkMushroomHunterDuplicity(persistedMushroomHunter, mushroomHunter)){
+                    if (checkMushroomHunterDuplicity(persistedMushroomHunter, mushroomHunter)){
                         throw new IllegalArgumentException("duplicate mushroom hunter on creating");
                     }
 
@@ -170,7 +160,7 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
                     if (mushroomHunter.getUserNickname() == null){
                         throw new IllegalArgumentException("null nickname on mushroom hunter update");
                     }
-                    if (TestUtils.checkMushroomHunterDuplicity(persistedMushroomHunter, mushroomHunter)){
+                    if (checkMushroomHunterDuplicity(persistedMushroomHunter, mushroomHunter)){
                         throw new IllegalArgumentException("duplicating unique mushroom hunter attribute on updating");
                     }
                     persistedMushroomHunter.replace(mushroomHunter.getId(), mushroomHunter);
@@ -182,12 +172,12 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
 
         mushroomHunterDao.create(persistedHunter);
         mushroomHunterDao.create(persistedHunter2);
+        persistedMushroomHunterPreTest =  persistedMushroomHunter.size();
     }
 
     @Test
     public void findMushroomHunterById() throws Exception {
-        mushroomHunterDao.create(newHunter);
-        assertThat(service.findHunterById(newHunter.getId())).isEqualTo(newHunter);
+        assertThat(service.findHunterById(persistedHunter.getId())).isEqualTo(persistedHunter);
     }
 
     @Test
@@ -201,9 +191,8 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
     }
 
     @Test
-    public void findAllMushroomHunters() throws Exception {
-        mushroomHunterDao.create(newHunter);
-        assertThat(service.findAllHunters()).containsExactlyInAnyOrder(persistedHunter,persistedHunter2, newHunter);
+    public void findAllMushroomHunters() {
+        assertThat(service.findAllHunters()).containsExactlyInAnyOrder(persistedHunter,persistedHunter2);
     }
 
     @Test
@@ -220,50 +209,53 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
     }
 
     @Test
-    public void findByMushroomHunterNonExistingNickname() throws Exception {
+    public void findByMushroomHunterNonExistingNickname() {
         String nonPersistedNickname = "nickname";
         assertThat(service.findHunterByNickname(nonPersistedNickname)).isNull();
     }
 
     @Test
-    public void createMushroomHunter() throws Exception {
+    public void createMushroomHunter() {
+        newHunter = createHunter("Jan", "Jakub", "J2J", "95gh3kew", false);
+        int oldSize = persistedMushroomHunter.size();
+
         service.registerHunter(newHunter, newHunter.getPasswordHash());
-        assertThat(mushroomHunterDao.findById(newHunter.getId())).isEqualTo(newHunter);
+        assertThat(persistedMushroomHunter.size()).isEqualTo(oldSize + 1);
     }
 
     @Test
     public void createNullMushroomHunter() throws Exception {
-        assertThatThrownBy(() -> mushroomHunterDao.create(null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.registerHunter(null, "abcd")).isInstanceOf(EntityOperationServiceException.class);
     }
 
     @Test
     public void createNullFirstNameMushroomHunter() throws Exception {
-        newHunter.setFirstName(null);
-        assertThatThrownBy(() -> mushroomHunterDao.create(newHunter)).isInstanceOf(IllegalArgumentException.class);
+        newHunter = createHunter(null, "Jakub", "J2J", "95gh3kew", false);
+        assertThatThrownBy(() -> service.registerHunter(newHunter, newHunter.getPasswordHash())).isInstanceOf(EntityOperationServiceException.class);
     }
 
     @Test
     public void createNullLSurnameMushroomHunter() throws Exception {
-        newHunter.setSurname(null);
-        assertThatThrownBy(() -> mushroomHunterDao.create(newHunter)).isInstanceOf(IllegalArgumentException.class);
+        newHunter = createHunter("Jan", null, "J2J", "95gh3kew", false);
+        assertThatThrownBy(() -> service.registerHunter(newHunter, newHunter.getPasswordHash())).isInstanceOf(EntityOperationServiceException.class);
     }
 
     @Test
     public void createNullNicknameMushroomHunter() throws Exception {
-        newHunter.setUserNickname(null);
-        assertThatThrownBy(() -> mushroomHunterDao.create(newHunter)).isInstanceOf(IllegalArgumentException.class);
+        newHunter = createHunter("Jan", "Jakub", null, "95gh3kew", false);
+        assertThatThrownBy(() -> service.registerHunter(newHunter, newHunter.getPasswordHash())).isInstanceOf(EntityOperationServiceException.class);
     }
 
     @Test
     public void createDuplicateMushroomHunter() throws Exception {
-        assertThatThrownBy(() -> mushroomHunterDao.create(persistedHunter)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.registerHunter(persistedHunter, persistedHunter.getPasswordHash())).isInstanceOf(EntityOperationServiceException.class);
     }
 
     @Test
     public void deleteMushroomHunter() throws Exception {
-        assertThat(mushroomHunterDao.findById(persistedHunter.getId())).isNotNull();
+        assertThat(persistedMushroomHunter.values()).containsExactlyInAnyOrder(persistedHunter,persistedHunter2);
         service.deleteHunter(persistedHunter);
-        assertThat(mushroomHunterDao.findById(persistedHunter.getId())).isNull();
+        assertThat(persistedMushroomHunter.values()).containsExactlyInAnyOrder(persistedHunter2);
     }
 
     @Test
@@ -274,64 +266,58 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
 
     @Test
     public void updateMushroomHuntersNickname() throws Exception {
-        String newUpdateValue = "TalkingHeads";
-        MushroomHunter hunter = service.findHunterById(persistedHunter.getId());
-        hunter.setUserNickname(newUpdateValue);
-        service.updateHunter(hunter);
+        String newUpdateValue = "New Nickname";
 
-        hunter = service.findHunterById(persistedHunter.getId());
-        assertThat(hunter.getUserNickname()).isEqualTo(newUpdateValue);
+        assertThat(persistedHunter.getUserNickname()).isNotEqualTo(newUpdateValue);
 
+        persistedHunter.setUserNickname(newUpdateValue);
+        service.updateHunter(persistedHunter);
+
+        assertThat(persistedHunter.getUserNickname()).isEqualTo(newUpdateValue);
     }
 
     @Test
     public void updateMushroomHuntersInfo() throws Exception {
         String newUpdateValue = "New Info";
-        MushroomHunter hunter = service.findHunterById(persistedHunter.getId());
-        assertThat(hunter.getPersonalInfo()).isNotEqualTo(newUpdateValue);
 
-        hunter.setPersonalInfo(newUpdateValue);
-        service.updateHunter(hunter);
+        assertThat(persistedHunter.getPersonalInfo()).isNotEqualTo(newUpdateValue);
 
-        hunter = service.findHunterById(persistedHunter.getId());
-        assertThat(hunter.getPersonalInfo()).isEqualTo(newUpdateValue);
+        persistedHunter.setPersonalInfo(newUpdateValue);
+        service.updateHunter(persistedHunter);
 
+        assertThat(persistedHunter.getPersonalInfo()).isEqualTo(newUpdateValue);
     }
 
     @Test
     public void updateMushroomHuntersNicknameToNull() throws Exception {
         String newUpdateValue = null;
-        MushroomHunter hunter = service.findHunterById(persistedHunter.getId());
-        hunter.setUserNickname(newUpdateValue);
+        persistedHunter.setUserNickname(newUpdateValue);
 
-        assertThatThrownBy(() -> service.updateHunter(hunter)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(() -> service.updateHunter(persistedHunter)).isInstanceOf(EntityOperationServiceException.class);
     }
 
     @Test
     public void updateMushroomHuntersToNicknameDuplicate() throws Exception {
         String newUpdateValue = persistedHunter2.getUserNickname();
-        MushroomHunter hunter = service.findHunterById(persistedHunter.getId());
-        hunter.setUserNickname(newUpdateValue);
+        persistedHunter.setUserNickname(newUpdateValue);
 
-        assertThatThrownBy(() -> service.updateHunter(hunter)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(() -> service.updateHunter(persistedHunter)).isInstanceOf(EntityOperationServiceException.class);
     }
 
     @Test
     public void updateMushroomHuntersFirstNameToNull() throws Exception {
         String newUpdateValue = null;
-        MushroomHunter hunter = service.findHunterById(persistedHunter.getId());
-        hunter.setFirstName(newUpdateValue);
+        persistedHunter.setFirstName(newUpdateValue);
 
-        assertThatThrownBy(() -> service.updateHunter(hunter)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(() -> service.updateHunter(persistedHunter)).isInstanceOf(EntityOperationServiceException.class);
     }
 
     @Test
     public void updateMushroomHuntersSurnameToNull() throws Exception {
         String newUpdateValue = null;
-        MushroomHunter hunter = service.findHunterById(persistedHunter.getId());
-        hunter.setSurname(newUpdateValue);
+        persistedHunter.setSurname(newUpdateValue);
 
-        assertThatThrownBy(() -> service.updateHunter(hunter)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(() -> service.updateHunter(persistedHunter)).isInstanceOf(EntityOperationServiceException.class);
     }
 
 
@@ -347,7 +333,7 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
     @Test
     @Ignore
     public void updatePasswordToNull() throws Exception {
-        assertThatThrownBy(() -> service.updatePassword(persistedHunter, "winry", null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.updatePassword(persistedHunter, "winry", null)).isInstanceOf(EntityOperationServiceException.class);
     }
 
     @Test
@@ -368,7 +354,7 @@ public class MushroomHunterServiceTest extends AbstractTransactionalJUnit4Spring
 
     @Test
     public void adminCheckOnNonAdmin() throws Exception {
-        newHunter.setAdmin(false);
+        newHunter = createHunter("Jan", "Jakub", "J2J", "95gh3kew", false);
         mushroomHunterDao.create(newHunter);
         assertThat(service.isAdmin(newHunter)).isFalse();
     }
