@@ -69,4 +69,11 @@ class TestUtils {
         }
         return true;
     }
+
+    public static void validateMushroom(Mushroom mushroom){
+        if (mushroom == null) throw new IllegalArgumentException("null");
+        if (mushroom.getName() == null) throw new IllegalArgumentException("nameIsNull");
+        if (mushroom.getIntervalOfOccurrence() == null) throw new IllegalArgumentException("interval of occurence is null");
+        if (mushroom.getType() == null) throw new IllegalArgumentException("type is null");
+    }
 }
