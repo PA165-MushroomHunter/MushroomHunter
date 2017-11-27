@@ -68,6 +68,7 @@ class TestUtils {
         return false;
     }
 
+
     public static boolean checkVisitValidity(Visit visit){
         if (visit == null || visit.getDate() == null || visit.getHunter() == null || visit.getForest() == null){
             return false;
@@ -80,5 +81,16 @@ class TestUtils {
         if (mushroom.getName() == null) throw new IllegalArgumentException("nameIsNull");
         if (mushroom.getIntervalOfOccurrence() == null) throw new IllegalArgumentException("interval of occurence is null");
         if (mushroom.getType() == null) throw new IllegalArgumentException("type is null");
+
+    }
+
+    static boolean checkMushroomHunterDuplicity(Map<Long, MushroomHunter> hunterMap, MushroomHunter newHunter) {
+        for (MushroomHunter hunter : hunterMap.values()) {
+            if (!hunter.getId().equals(newHunter.getId())
+                    && hunter.getUserNickname().equals(newHunter.getUserNickname())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

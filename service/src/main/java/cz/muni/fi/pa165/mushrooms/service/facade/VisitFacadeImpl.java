@@ -36,7 +36,6 @@ public class VisitFacadeImpl implements VisitFacade {
             return null;
         }
         VisitDTO mapped = beanMappingService.mapTo(visit, VisitDTO.class);
-        System.err.println(mapped);
         return mapped;
     }
 
@@ -55,9 +54,6 @@ public class VisitFacadeImpl implements VisitFacade {
         List<Mushroom> mushrooms = beanMappingService.mapTo(visit.getMushrooms(), Mushroom.class);
 
         Visit newVisit = new Visit();
-
-        System.err.println(visit.getDate());
-        System.err.println(LocalDate.parse(visit.getDate()));
 
         newVisit.setDate(LocalDate.parse(visit.getDate()));
         newVisit.setForest(forest);
@@ -97,9 +93,8 @@ public class VisitFacadeImpl implements VisitFacade {
             //TODO: react to it somehow
         }
 
-
         entityVisit.setHunter(hunter);
-        //entityVisit.setDate(visit.getDate());
+        entityVisit.setDate(LocalDate.parse(visit.getDate()));
         entityVisit.setForest(forest);
         entityVisit.setNote(visit.getNote());
         entityVisit.setMushrooms(mushrooms);
