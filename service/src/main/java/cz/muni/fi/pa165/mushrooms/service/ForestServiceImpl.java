@@ -1,12 +1,22 @@
 package cz.muni.fi.pa165.mushrooms.service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.TreeMap;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
 import cz.muni.fi.pa165.mushrooms.dao.ForestDao;
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
+import cz.muni.fi.pa165.mushrooms.entity.Visit;
 import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityFindServiceException;
 import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityOperationServiceException;
 import org.springframework.dao.DataAccessException;
@@ -20,6 +30,9 @@ public class ForestServiceImpl implements ForestService {
 
     @Inject
     private ForestDao forestDao;
+
+    @Inject
+    VisitService visitService;
 
     public List<Forest> findAllForests() throws DataAccessException {
         try {
@@ -74,8 +87,48 @@ public class ForestServiceImpl implements ForestService {
         }
     }
 
-    @Override
-    public List<Forest> findAllForestsWithMushroom(Mushroom mushroomEntity) throws DataAccessException {
-        return null; //TODO: do we need this?
+    private static class ForestCountComparator implements Comparator<Map.Entry<Forest, Integer>>{
+        public int compare(Map.Entry<Forest, Integer> e1, Map.Entry<Forest, Integer> e2) {
+
+            return e1.getValue().compareTo(e2.getValue());
+        }
     }
+
+    @Override
+    public List<Map.Entry<Forest,Integer>> findAllForestsWithMushroom(Mushroom mushroomEntity) throws DataAccessException {
+        List<Visit> visits = visitService.findAllVisits();
+        List<Visit> visitsWithMushroom = new ArrayList<>();
+        for (Visit visit : visits) {
+            if (visit.getMushrooms().contains(mushroomEntity)){
+                visitsWithMushroom.add(visit);
+            }
+        }
+
+        //Simulating multiset behavior
+        // forest is the key, integer tells how many times the forest occurred in visits
+        Map<Forest, Integer>  forestCount = new TreeMap<>();
+        for (Visit visit : visitsWithMushroom) {
+            Forest forest = visit.getForest();
+            if(forestCount.containsKey(forest)){
+                Integer count = forestCount.get(forest);
+                count++;
+                forestCount.replace(forest,count);
+            } else {
+                forestCount.put(forest,1);
+            }
+        }
+
+        //priority queue encapsulates sorting
+        Queue queue = new PriorityQueue(forestCount.size(), new ForestCountComparator());
+        queue.addAll(forestCount.entrySet());
+
+        List<Map.Entry<Forest,Integer>> sortedForests = new ArrayList<>();
+
+        for (Map.Entry<Forest, Integer> entry; (entry = (Map.Entry<Forest, Integer>) queue.poll())!=null;) {
+            sortedForests.add(entry);
+        }
+
+        return sortedForests;
+    }
+
 }
