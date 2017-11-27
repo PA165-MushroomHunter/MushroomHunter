@@ -12,6 +12,7 @@ import mockit.Injectable;
 import mockit.Tested;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.dao.DataAccessException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -212,7 +213,7 @@ public class MushroomServiceImplTest {
         database.create(mushroom1);
         database.create(mushroom2);
         //null
-        assertThatThrownBy(() -> service.findMushroomById(null)).isInstanceOf(EntityFindServiceException.class);
+        assertThatThrownBy(() -> service.findMushroomById(null)).isInstanceOf(DataAccessException.class);
         //valid
         assertThat(service.findMushroomById(mushroom1.getId())).isEqualToComparingFieldByField(mushroom1);
         //invalid
@@ -226,7 +227,7 @@ public class MushroomServiceImplTest {
         database.create(mushroom2);
 
         //null name
-        assertThatThrownBy(() -> service.findMushroomByName(null)).isInstanceOf(EntityFindServiceException.class);
+        assertThatThrownBy(() -> service.findMushroomByName(null)).isInstanceOf(DataAccessException.class);
         //nonexistent name
         assertThat(service.findMushroomByName(mushroom3.getName())).isNull();
         //existing name
@@ -250,14 +251,14 @@ public class MushroomServiceImplTest {
 
         //entity with preexisting ID
         mushroom2.setId(2L);
-        assertThatThrownBy(()->service.createMushroom(mushroom2)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(()->service.createMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
 
         //entity with conflicting ID
         mushroom2.setId(mushroom1.getId());
-        assertThatThrownBy(()->service.createMushroom(mushroom2)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(()->service.createMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
 
         //null
-        assertThatThrownBy(()->service.createMushroom(null)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(()->service.createMushroom(null)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
@@ -266,15 +267,15 @@ public class MushroomServiceImplTest {
         database.create(mushroom1);
 
         //delete nonexistent without ID
-        assertThatThrownBy(()->service.deleteMushroom(mushroom2)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(()->service.deleteMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
         //delete nonexistent with ID
         mushroom2.setId(2L);
-        assertThatThrownBy(()->service.deleteMushroom(mushroom2)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(()->service.deleteMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
         //correct delete
         service.deleteMushroom(mushroom1);
         assertThat(database.findAll()).isEmpty();
         //delete null
-        assertThatThrownBy(()->service.deleteMushroom(null)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(()->service.deleteMushroom(null)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
@@ -284,10 +285,10 @@ public class MushroomServiceImplTest {
         database.create(mushroom3);
 
         //update no id
-        assertThatThrownBy(()->service.updateMushroom(mushroom2)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(()->service.updateMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
         //update nonexistent ID
         mushroom2.setId(1234L);
-        assertThatThrownBy(()->service.updateMushroom(mushroom2)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(()->service.updateMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
         //correct update
         String newName = "Totaly new name";
         mushroom1.setName(newName);
@@ -295,7 +296,7 @@ public class MushroomServiceImplTest {
         Mushroom tmpMush = database.findById(mushroom1.getId());
         assertThat(tmpMush.getName().equals(newName));
         //update null
-        assertThatThrownBy(()->service.updateMushroom(null)).isInstanceOf(EntityOperationServiceException.class);
+        assertThatThrownBy(()->service.updateMushroom(null)).isInstanceOf(DataAccessException.class);
     }
 
 }
