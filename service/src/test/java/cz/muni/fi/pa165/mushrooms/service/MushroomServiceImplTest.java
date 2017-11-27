@@ -284,23 +284,12 @@ public class MushroomServiceImplTest {
     }
 
     @Test
-    public void createMushroom_valid(){
+    public void createMushroom_valid() {
 
         assertThat(mushroom1.getId()).isNull();
         service.createMushroom(mushroom1);
         assertThat(mushroom1.getId()).isNotNull();
-        assertThat(database.findById(mushroom1.getId())).isEqualToComparingFieldByField(mushroom1);
-
-        //entity with preexisting ID
-        mushroom2.setId(2L);
-        assertThatThrownBy(()->service.createMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
-
-        //entity with conflicting ID
-        mushroom2.setId(mushroom1.getId());
-        assertThatThrownBy(()->service.createMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
-
-        //null
-        assertThatThrownBy(()->service.createMushroom(null)).isInstanceOf(DataAccessException.class);
+        assertThat(database.findById(mushroom1.getId())).isEqualTo(mushroom1);
     }
 
     @Test
