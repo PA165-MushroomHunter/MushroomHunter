@@ -1,9 +1,12 @@
 package cz.muni.fi.pa165.mushrooms.service;
 
+import com.sun.org.apache.bcel.internal.generic.MULTIANEWARRAY;
 import cz.muni.fi.pa165.mushrooms.dao.MushroomDao;
 import cz.muni.fi.pa165.mushrooms.dao.VisitDao;
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
 import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
+import mockit.Delegate;
+import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import org.junit.Before;
@@ -39,7 +42,7 @@ public class MushroomServiceImplTest {
         }
 
 
-        void create(Mushroom mushroom) {
+        public void create(Mushroom mushroom) {
             validate(mushroom);
             if (mushroom.getId() != null) throw new IllegalArgumentException("already in db");
 
@@ -47,27 +50,27 @@ public class MushroomServiceImplTest {
             database.put(databaseCounter++, mushroom);
         }
 
-        void update(Mushroom mushroom) {
+        public void update(Mushroom mushroom) {
             validate(mushroom);
             if (mushroom.getId() == null) throw new IllegalArgumentException("not persisted - cannot be updated");
             if (database.replace(mushroom.getId(),mushroom) == null) throw new IllegalArgumentException("no object with such id in DB - cannot be updated");;
         }
 
-        void delete(Mushroom mushroom){
+        public void delete(Mushroom mushroom){
             validate(mushroom);
             if (mushroom.getId() == null) throw new IllegalArgumentException("no id assigned");
             //TODO: deleting non persisted should be OK or NOK?
             if (database.remove(mushroom.getId()) == null) throw new IllegalArgumentException("object was not in the database");;
         }
 
-        Mushroom findById(Long id) {
+        public Mushroom findById(Long id) {
             if (id == null){
                 throw new IllegalArgumentException("null id");
             }
             return database.get(id);
         }
 
-        List<Mushroom> findByMushroomType(MushroomType mushroomType){
+        public List<Mushroom> findByMushroomType(MushroomType mushroomType){
             List<Mushroom> typedList = new ArrayList<>();
             List<Mushroom> dumpedDatabase = Collections.unmodifiableList(new ArrayList<>(database.values()));
             for (Mushroom m : dumpedDatabase) {
@@ -81,7 +84,7 @@ public class MushroomServiceImplTest {
             return Collections.unmodifiableList(new ArrayList<>(database.values()));
         }
 
-        List<Mushroom> findByIntervalOfOccurrence(String fromMonth, String toMonth){
+        public List<Mushroom> findByIntervalOfOccurrence(String fromMonth, String toMonth){
             String intervalOfOccurrence = fromMonth + " - " + toMonth;
             List<Mushroom> typedList = new ArrayList<>();
             List<Mushroom> dumpedDatabase = Collections.unmodifiableList(new ArrayList<>(database.values()));
@@ -92,7 +95,7 @@ public class MushroomServiceImplTest {
             return typedList;
         }
 
-        Mushroom findByName(String name) {
+        public Mushroom findByName(String name) {
             List<Mushroom> typedList = new ArrayList<>();
             List<Mushroom> dumpedDatabase = Collections.unmodifiableList(new ArrayList<>(database.values()));
             for (Mushroom m : dumpedDatabase) {
@@ -106,7 +109,68 @@ public class MushroomServiceImplTest {
     MockDatabase database;
 
     @Before
-    public void Setup(){}
+    public void Setup(){
+        //TODO: actual setup
+
+
+        new Expectations(){{
+            mushroomDao.findById(anyLong);
+            result = new Delegate() {
+                Mushroom foo(Long id){
+                    return database.findById(id);
+                }
+            }; minTimes = 0;
+
+            mushroomDao.findByMushroomType((MushroomType) any);
+            result = new Delegate() {
+                List<Mushroom> foo(MushroomType type){
+                    return database.findByMushroomType(type);
+                }
+            }; minTimes = 0;
+
+            mushroomDao.create((Mushroom) any);
+            result = new Delegate() {
+                void foo(Mushroom m){
+                    database.create(m);
+                }
+            }; minTimes = 0;
+
+            mushroomDao.update((Mushroom) any);
+            result = new Delegate() {
+                void foo(Mushroom m){
+                    database.update(m);
+                }
+            }; minTimes = 0;
+
+            mushroomDao.delete((Mushroom) any);
+            result = new Delegate() {
+                void foo(Mushroom m){
+                    database.delete(m);
+                }
+            }; minTimes = 0;
+
+            mushroomDao.findAll();
+            result = new Delegate() {
+                List<Mushroom> foo(){
+                    return database.findAll();
+                }
+            }; minTimes = 0;
+
+            mushroomDao.findByName(anyString);
+            result = new Delegate() {
+                Mushroom foo(String name){
+                    return database.findByName(name);
+                }
+            }; minTimes = 0;
+
+            mushroomDao.findByIntervalOfOccurrence(anyString, anyString);
+            result = new Delegate() {
+                List<Mushroom> foo(String fromMonth, String toMonth){
+                    return database.findByIntervalOfOccurrence(fromMonth,toMonth);
+                }
+            }; minTimes = 0;
+        }};
+    }
 
     @Test
     public void findAllMushrooms(){}
