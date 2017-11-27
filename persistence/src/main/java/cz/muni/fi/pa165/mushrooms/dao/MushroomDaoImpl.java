@@ -7,8 +7,12 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.util.Arrays;
 import java.util.List;
 
+/*
+ * @author bohdancvejn
+ */
 @Repository
 public class MushroomDaoImpl implements MushroomDao {
 
@@ -85,13 +89,22 @@ public class MushroomDaoImpl implements MushroomDao {
             throw new IllegalArgumentException("Parameter toMonth is null");
         }
 
-        String intervalOfOccurrence = fromMonth + " - " + toMonth;
+        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        int indexFrom = Arrays.asList(months).indexOf(fromMonth);
+        int indexTo = Arrays.asList(months).indexOf(toMonth);
+
+        String[] monthInterval = new String[12];
+        int j = 0;
+        for(int i=0; i<months.length; i++){
+            if (indexFrom<=i && indexTo>=i){
+                monthInterval[j++] = months[i];
+            }
+        }
 
         try {
             return em.createQuery("select m from Mushroom m " +
-                    "where m.intervalOfOccurrence= :intervalOfOccurrence", Mushroom.class)
-                    .setParameter("intervalOfOccurrence", intervalOfOccurrence)
-                    .getResultList();
+                    "where m.intervalOfOccurrence in (:monthInterval)", Mushroom.class)
+                    .setParameter("monthInterval", monthInterval).getResultList();
         } catch (NoResultException e) {
             return null;
         }
