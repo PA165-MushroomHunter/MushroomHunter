@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * TODO: create  javadoc
@@ -94,7 +96,12 @@ public class ForestFacadeImpl implements ForestFacade {
         if (mushroom == null) throw new IllegalArgumentException();
         Mushroom mushroomEntity = mushroomService.findMushroomById(mushroom.getId());
 
-        List<Forest> forestsEntities = service.findAllForestsWithMushroom(mushroomEntity);
+        List<Map.Entry<Forest,Integer>> forestsPairs = service.findAllForestsWithMushroom(mushroomEntity);
+        List<Forest> forestsEntities = new ArrayList<>();
+
+        for (Map.Entry<Forest,Integer> entry : forestsPairs) {
+            forestsEntities.add(entry.getKey());
+        }
 
         return beanMappingService.mapTo(forestsEntities, ForestDTO.class);
     }
