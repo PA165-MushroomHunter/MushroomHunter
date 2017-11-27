@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static cz.muni.fi.pa165.mushrooms.service.TestUtils.validateMushroom;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -42,16 +43,10 @@ public class MushroomServiceImplTest {
         private Map<Long, Mushroom> database = new HashMap<>();
         private long databaseCounter = 0;
 
-        private void validate(Mushroom mushroom){
-            if (mushroom == null) throw new IllegalArgumentException("null");
-            if (mushroom.getName() == null) throw new IllegalArgumentException("nameIsNull");
-            if (mushroom.getIntervalOfOccurrence() == null) throw new IllegalArgumentException("interval of occurence is null");
-            if (mushroom.getType() == null) throw new IllegalArgumentException("type is null");
-        }
 
 
         public void create(Mushroom mushroom) {
-            validate(mushroom);
+            validateMushroom(mushroom);
             if (mushroom.getId() != null) throw new IllegalArgumentException("already in db");
 
             mushroom.setId(databaseCounter);
@@ -59,16 +54,15 @@ public class MushroomServiceImplTest {
         }
 
         public void update(Mushroom mushroom) {
-            validate(mushroom);
+            validateMushroom(mushroom);
             if (mushroom.getId() == null) throw new IllegalArgumentException("not persisted - cannot be updated");
             if (database.replace(mushroom.getId(),mushroom) == null) throw new IllegalArgumentException("no object with such id in DB - cannot be updated");;
         }
 
         public void delete(Mushroom mushroom){
-            validate(mushroom);
+            validateMushroom(mushroom);
             if (mushroom.getId() == null) throw new IllegalArgumentException("no id assigned");
-            //TODO: deleting non persisted should be OK or NOK?
-            if (database.remove(mushroom.getId()) == null) throw new IllegalArgumentException("object was not in the database");;
+            database.remove(mushroom.getId());
         }
 
         public Mushroom findById(Long id) {
@@ -80,11 +74,9 @@ public class MushroomServiceImplTest {
 
         public List<Mushroom> findByMushroomType(MushroomType mushroomType){
             List<Mushroom> typedList = new ArrayList<>();
-            List<Mushroom> dumpedDatabase = Collections.unmodifiableList(new ArrayList<>(database.values()));
-            for (Mushroom m : dumpedDatabase) {
+            for (Mushroom m : database.values()) {
                 if (m.getType().equals(mushroomType)) typedList.add(m);
             }
-
             return typedList;
         }
 
@@ -95,8 +87,7 @@ public class MushroomServiceImplTest {
         public List<Mushroom> findByIntervalOfOccurrence(String fromMonth, String toMonth){
             String intervalOfOccurrence = fromMonth + " - " + toMonth;
             List<Mushroom> typedList = new ArrayList<>();
-            List<Mushroom> dumpedDatabase = Collections.unmodifiableList(new ArrayList<>(database.values()));
-            for (Mushroom m : dumpedDatabase) {
+            for (Mushroom m : database.values()) {
                 if (m.getIntervalOfOccurrence().equals(intervalOfOccurrence)) typedList.add(m);
             }
 
@@ -127,7 +118,7 @@ public class MushroomServiceImplTest {
     }
 
     @Before
-    public void Setup(){
+    public void setUp(){
         //TODO: actual setup
 
         database = new MockDatabase();
@@ -270,7 +261,8 @@ public class MushroomServiceImplTest {
         assertThatThrownBy(()->service.deleteMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
         //delete nonexistent with ID
         mushroom2.setId(2L);
-        assertThatThrownBy(()->service.deleteMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
+        service.deleteMushroom(mushroom2);
+        assertThat(database.findAll()).containsExactlyInAnyOrder(mushroom1); //checks that invalid delete does not modify database
         //correct delete
         service.deleteMushroom(mushroom1);
         assertThat(database.findAll()).isEmpty();
