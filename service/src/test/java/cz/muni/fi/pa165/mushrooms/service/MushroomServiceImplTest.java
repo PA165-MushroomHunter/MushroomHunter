@@ -119,7 +119,6 @@ public class MushroomServiceImplTest {
 
     @Before
     public void setUp(){
-        //TODO: actual setup
 
         database = new MockDatabase();
         mushroom1 = setupMushroom("some",MushroomType.UNEDIBLE,"june","july");
@@ -261,8 +260,27 @@ public class MushroomServiceImplTest {
     }
 
     @Test
-    public void findByIntervalOfOccurrence(){
-        //TODO
+    public void findByIntervalOfOccurrence_oneResut(){
+        database.create(mushroom1);
+        database.create(mushroom2);
+        database.create(mushroom3);
+        assertThat(service.findByIntervalOfOccurrence("may","september")).containsExactlyInAnyOrder(mushroom3);
+    }
+
+    @Test
+    public void findByIntervalOfOccurrence_multipleResults(){
+        database.create(mushroom1);
+        database.create(mushroom2);
+        database.create(mushroom3);
+        assertThat(service.findByIntervalOfOccurrence("june","july")).containsExactlyInAnyOrder(mushroom1,mushroom2);
+    }
+
+    @Test
+    public void findByIntervalOfOccurrence_noResults(){
+        database.create(mushroom1);
+        database.create(mushroom2);
+        database.create(mushroom3);
+        assertThat(service.findByIntervalOfOccurrence("july","september")).isEmpty();
     }
 
     @Test
