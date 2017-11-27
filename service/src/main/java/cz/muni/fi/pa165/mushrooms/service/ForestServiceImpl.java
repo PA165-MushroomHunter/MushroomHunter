@@ -96,6 +96,8 @@ public class ForestServiceImpl implements ForestService {
 
     @Override
     public List<Map.Entry<Forest,Integer>> findAllForestsWithMushroom(Mushroom mushroomEntity) throws DataAccessException {
+        //this is not data manipulation problem, not throwing DataAccessException is OK
+        if (mushroomEntity == null) throw new IllegalArgumentException("null mushroom entity");
         List<Visit> visits = visitService.findAllVisits();
         List<Visit> visitsWithMushroom = new ArrayList<>();
         for (Visit visit : visits) {
@@ -106,7 +108,7 @@ public class ForestServiceImpl implements ForestService {
 
         //Simulating multiset behavior
         // forest is the key, integer tells how many times the forest occurred in visits
-        Map<Forest, Integer>  forestCount = new TreeMap<>();
+        Map<Forest, Integer>  forestCount = new HashMap<>();
         for (Visit visit : visitsWithMushroom) {
             Forest forest = visit.getForest();
             if(forestCount.containsKey(forest)){
@@ -118,13 +120,17 @@ public class ForestServiceImpl implements ForestService {
             }
         }
 
-        //priority queue encapsulates sorting
-        Queue queue = new PriorityQueue(forestCount.size(), new ForestCountComparator());
-        queue.addAll(forestCount.entrySet());
-
         List<Map.Entry<Forest,Integer>> sortedForests = new ArrayList<>();
 
-        for (Map.Entry<Forest, Integer> entry; (entry = (Map.Entry<Forest, Integer>) queue.poll())!=null;) {
+        if (forestCount.size() == 0) return sortedForests;
+
+        //priority queue encapsulates sorting
+        Queue<Map.Entry<Forest, Integer>> queue = new PriorityQueue<>(forestCount.size(), new ForestCountComparator());
+        queue.addAll(forestCount.entrySet());
+
+
+
+        for (Map.Entry<Forest, Integer> entry; (entry = queue.poll())!=null;) {
             sortedForests.add(entry);
         }
 

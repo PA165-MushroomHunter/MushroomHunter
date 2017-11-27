@@ -3,6 +3,9 @@ package cz.muni.fi.pa165.mushrooms.service;
 import cz.muni.fi.pa165.mushrooms.dao.ForestDao;
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
+import cz.muni.fi.pa165.mushrooms.entity.MushroomHunter;
+import cz.muni.fi.pa165.mushrooms.entity.Visit;
+import cz.muni.fi.pa165.mushrooms.enums.MushroomType;
 import mockit.Delegate;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -20,12 +23,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /**
  * Tests for service layer related to Forest entity
  *
- * @author bohdancvejn
+ * @author bohdancvejn, bencikpeter
  */
 
 public class ForestServiceImplTest {
     @Injectable
-    private VisitService visitService; //TODO: mock at testing business function
+    private VisitService visitService;
 
     @Injectable
     private ForestDao forestDao;
@@ -91,6 +94,10 @@ public class ForestServiceImplTest {
     private MockDatabase database;
     private Forest forest1, forest2, forest3;
 
+    private Visit visit1, visit2, visit3, visit4, visit5, visit6;
+    private MushroomHunter hunter;
+    private Mushroom shroom;
+
     private static Forest setupForest(String name, String description) {
         Forest f = new Forest();
         f.setName(name);
@@ -105,6 +112,22 @@ public class ForestServiceImplTest {
         forest1 = setupForest("Evergreen", "nice and always green");
         forest2 = setupForest("Negativos", "dirty but full of mushrooms");
         forest3 = setupForest("Lohor", "never visited by man");
+
+        hunter = createHunter("some", "person","anonymous",false);
+        visit1 = createVisit(hunter,forest1,null);
+        visit2 = createVisit(hunter,forest1,null);
+        visit3 = createVisit(hunter,forest1,null);
+        visit4 = createVisit(hunter,forest2,null);
+        visit5 = createVisit(hunter,forest2,null);
+        visit6 = createVisit(hunter,forest3,null);
+
+        shroom = createMushroom("Shroom", MushroomType.UNEDIBLE,"june","july");
+        visit1.addMushroom(shroom);
+        visit2.addMushroom(shroom);
+        visit3.addMushroom(shroom);
+        visit4.addMushroom(shroom);
+        visit5.addMushroom(shroom);
+        visit6.addMushroom(shroom);
 
 
         new Expectations() {{
@@ -157,6 +180,19 @@ public class ForestServiceImplTest {
             };
             minTimes = 0;
 
+            visitService.findAllVisits();
+            result = new Delegate() {
+                List<Visit> foo() {
+                    List<Visit> visits = new ArrayList<>();
+                    visits.add(visit1);
+                    visits.add(visit2);
+                    visits.add(visit3);
+                    visits.add(visit4);
+                    visits.add(visit5);
+                    visits.add(visit6);
+                    return visits;
+                }
+            }; minTimes = 0;
         }};
     }
 
@@ -341,5 +377,30 @@ public class ForestServiceImplTest {
 
         assertThatThrownBy(() -> service.updateForest(null)).isInstanceOf(DataAccessException.class);
     }
+
+    @Test
+    public void findAllForestsWithMushroom_valid(){
+        List<Map.Entry<Forest,Integer>> orderedList = service.findAllForestsWithMushroom(shroom);
+        assertThat(orderedList).hasSize(3); //cannot check for elements directly - Map.Entry cannot be instantiated
+        assertThat(orderedList.get(0).getKey()).isEqualTo(forest3);
+        assertThat(orderedList.get(1).getKey()).isEqualTo(forest2);
+        assertThat(orderedList.get(2).getKey()).isEqualTo(forest1);
+
+        assertThat(orderedList.get(0).getValue()).isEqualTo(1);
+        assertThat(orderedList.get(1).getValue()).isEqualTo(2);
+        assertThat(orderedList.get(2).getValue()).isEqualTo(3);
+    }
+
+    @Test
+    public void findAllForestsWithMushroom_empty(){
+        List<Map.Entry<Forest,Integer>> orderedList = service.findAllForestsWithMushroom(createMushroom("other",MushroomType.POISONOUS, "may","aug"));
+        assertThat(orderedList).isEmpty();
+    }
+
+    @Test
+    public void findAllForestsWithMushroom_null(){
+        assertThatThrownBy(()->service.findAllForestsWithMushroom(null)).isInstanceOf(IllegalArgumentException.class);
+    }
+
 }
 
