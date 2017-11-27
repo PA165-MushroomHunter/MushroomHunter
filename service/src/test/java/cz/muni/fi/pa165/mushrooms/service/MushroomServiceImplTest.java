@@ -200,45 +200,78 @@ public class MushroomServiceImplTest {
     }
 
     @Test
-    public void findMushroomById(){
+    public void findMushroomById_valid(){
         database.create(mushroom1);
         database.create(mushroom2);
-        //null
-        assertThatThrownBy(() -> service.findMushroomById(null)).isInstanceOf(DataAccessException.class);
-        //valid
+
         assertThat(service.findMushroomById(mushroom1.getId())).isEqualToComparingFieldByField(mushroom1);
-        //invalid
+    }
+
+    @Test
+    public void findMushroomById_invalid(){
+        database.create(mushroom1);
+        database.create(mushroom2);
+
         assertThat(service.findMushroomById(999L)).isNull();
     }
 
     @Test
-    public void FindMushroomByName(){
+    public void findMushroomById_null(){
+        database.create(mushroom1);
+        database.create(mushroom2);
+
+        assertThatThrownBy(() -> service.findMushroomById(null)).isInstanceOf(DataAccessException.class);
+    }
+
+    @Test
+    public void FindMushroomByName_null(){
 
         database.create(mushroom1);
         database.create(mushroom2);
 
-        //null name
         assertThatThrownBy(() -> service.findMushroomByName(null)).isInstanceOf(DataAccessException.class);
-        //nonexistent name
-        assertThat(service.findMushroomByName(mushroom3.getName())).isNull();
-        //existing name
-        database.create(mushroom3);
-        assertThat(service.findMushroomByName(mushroom3.getName())).isEqualToComparingFieldByField(mushroom3);
-        //empty string
-        assertThat(service.findMushroomByName("")).isNull();
-
     }
 
     @Test
-    public void findByIntervalOfOccurrence(){}
+    public void FindMushroomByName_nonexistent(){
+
+        database.create(mushroom1);
+        database.create(mushroom2);
+
+        assertThat(service.findMushroomByName(mushroom3.getName())).isNull();
+    }
 
     @Test
-    public void createMushroom(){
+    public void FindMushroomByName_valid(){
+
+        database.create(mushroom1);
+        database.create(mushroom2);
+        database.create(mushroom3);
+
+        assertThat(service.findMushroomByName(mushroom3.getName())).isEqualToComparingFieldByField(mushroom3);
+    }
+
+    @Test
+    public void FindMushroomByName_emptyString(){
+
+        database.create(mushroom1);
+        database.create(mushroom2);
+
+        assertThat(service.findMushroomByName("")).isNull();
+    }
+
+    @Test
+    public void findByIntervalOfOccurrence(){
+        //TODO
+    }
+
+    @Test
+    public void createMushroom_valid(){
 
         assertThat(mushroom1.getId()).isNull();
         service.createMushroom(mushroom1);
         assertThat(mushroom1.getId()).isNotNull();
-
+        assertThat(database.findById(mushroom1.getId())).isEqualToComparingFieldByField(mushroom1);
 
         //entity with preexisting ID
         mushroom2.setId(2L);
@@ -253,41 +286,102 @@ public class MushroomServiceImplTest {
     }
 
     @Test
-    public void deleteMushroom(){
+    public void createMushroom_preexisting(){
+
+        mushroom2.setId(2L);
+        assertThatThrownBy(()->service.createMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
+    }
+
+    @Test
+    public void createMushroom_conflicting(){
 
         database.create(mushroom1);
 
-        //delete nonexistent without ID
+        mushroom2.setId(mushroom1.getId());
+        assertThatThrownBy(()->service.createMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
+    }
+
+    @Test
+    public void createMushroom_null(){
+
+        assertThatThrownBy(()->service.createMushroom(null)).isInstanceOf(DataAccessException.class);
+    }
+
+    @Test
+    public void deleteMushroom_noID(){
+
+        database.create(mushroom1);
+
         assertThatThrownBy(()->service.deleteMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
+    }
+
+    @Test
+    public void deleteMushroom_nonexistentID(){
+
+        database.create(mushroom1);
+
         //delete nonexistent with ID
         mushroom2.setId(2L);
         service.deleteMushroom(mushroom2);
         assertThat(database.findAll()).containsExactlyInAnyOrder(mushroom1); //checks that invalid delete does not modify database
-        //correct delete
+    }
+
+    @Test
+    public void deleteMushroom_correct(){
+
+        database.create(mushroom1);
+
+
         service.deleteMushroom(mushroom1);
         assertThat(database.findAll()).isEmpty();
-        //delete null
+    }
+
+    @Test
+    public void deleteMushroom_null(){
+
+        database.create(mushroom1);
+
         assertThatThrownBy(()->service.deleteMushroom(null)).isInstanceOf(DataAccessException.class);
     }
 
     @Test
-    public void updateMushroom(){
+    public void updateMushroom_nullID(){
 
         database.create(mushroom1);
         database.create(mushroom3);
 
-        //update no id
         assertThatThrownBy(()->service.updateMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
-        //update nonexistent ID
+    }
+
+    @Test
+    public void updateMushroom_nonexistentID(){
+
+        database.create(mushroom1);
+        database.create(mushroom3);
+
         mushroom2.setId(1234L);
         assertThatThrownBy(()->service.updateMushroom(mushroom2)).isInstanceOf(DataAccessException.class);
-        //correct update
+    }
+
+    @Test
+    public void updateMushroom_valid(){
+
+        database.create(mushroom1);
+        database.create(mushroom3);
+
         String newName = "Totaly new name";
         mushroom1.setName(newName);
         service.updateMushroom(mushroom1);
         Mushroom tmpMush = database.findById(mushroom1.getId());
         assertThat(tmpMush.getName().equals(newName));
-        //update null
+    }
+
+    @Test
+    public void updateMushroom_null(){
+
+        database.create(mushroom1);
+        database.create(mushroom3);
+
         assertThatThrownBy(()->service.updateMushroom(null)).isInstanceOf(DataAccessException.class);
     }
 
