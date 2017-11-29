@@ -1,0 +1,10 @@
+{
+  "name": "MushroomHunterFrontend",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {},
+  "dependencies": {
+    "jquery": "latest",
+    "bootstrap": "latest"
+  }
+}

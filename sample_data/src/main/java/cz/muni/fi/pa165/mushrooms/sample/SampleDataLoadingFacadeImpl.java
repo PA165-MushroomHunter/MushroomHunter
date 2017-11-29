@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
+
 @Component
 @Transactional //transactions are handled on facade layer
 public class SampleDataLoadingFacadeImpl implements SampleDataLoadingFacade {
@@ -26,16 +28,16 @@ public class SampleDataLoadingFacadeImpl implements SampleDataLoadingFacade {
     final static Logger log = LoggerFactory.getLogger(SampleDataLoadingFacadeImpl.class);
     private static final String DEFAULT_PASSWORD = "Password.123";
 
-    @Autowired
+    @Inject
     private MushroomHunterService hunterService;
 
-    @Autowired
+    @Inject
     private MushroomService mushroomService;
 
-    @Autowired
+    @Inject
     private ForestService forestService;
 
-    @Autowired
+    @Inject
     private VisitService visitService;
 
     private Map<String, MushroomHunter> hunters = new HashMap<>();
@@ -45,18 +47,17 @@ public class SampleDataLoadingFacadeImpl implements SampleDataLoadingFacade {
     @Override
     public void loadData() {
         loadMushroomHunters();
-        //loadMushrooms();
-        //loadForests();
-        //loadVisits();
+        loadMushrooms();
+        loadForests();
+        loadVisits();
     }
 
     private void loadVisits() {
-        // TODO: Complete
         log.info("Creating visits.");
-        createVisit("First time visit", LocalDate.ofEpochDay(50));
-        createVisit("Last time visit", LocalDate.now());
-        createVisit("Some other visit", LocalDate.ofEpochDay(2200));
-        log.info("Forests has been created!");
+        createVisit("First time visit", LocalDate.ofEpochDay(50), hunters.get("john"), forests.get("magic forest"));
+        createVisit("Last time visit", LocalDate.now(), hunters.get("dennis"), forests.get("deep forest"));
+        createVisit("Some other visit", LocalDate.ofEpochDay(2200), hunters.get("benny"), forests.get("deep forest"));
+        log.info("Visits have been created!");
     }
 
     private void loadForests() {
@@ -65,7 +66,7 @@ public class SampleDataLoadingFacadeImpl implements SampleDataLoadingFacade {
         createForest("Deep forest", "Soo deep!");
         createForest("Scary forest", "Soo ultimate bo bo bo scary!");
         createForest("Normal forest", "Nothing interesting about it.");
-        log.info("Forests has been created!");
+        log.info("Forests have been created!");
     }
 
     private void loadMushrooms() {
@@ -117,10 +118,12 @@ public class SampleDataLoadingFacadeImpl implements SampleDataLoadingFacade {
         forests.put(name.toLowerCase(), forest);
     }
 
-    private void createVisit(String note, LocalDate date) {
+    private void createVisit(String note, LocalDate date, MushroomHunter hunter, Forest forest) {
         Visit visit = new Visit();
         visit.setNote(note);
         visit.setDate(date);
+        visit.setHunter(hunter);
+        visit.setForest(forest);
         visitService.createVisit(visit);
         log.debug("Creating visit: " + visit);
     }
