@@ -1,5 +1,11 @@
 package cz.muni.fi.pa165.mushrooms.service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import cz.muni.fi.pa165.mushrooms.dao.VisitDao;
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
 import cz.muni.fi.pa165.mushrooms.entity.Mushroom;
@@ -10,11 +16,6 @@ import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityOperationServiceExcep
 import cz.muni.fi.pa165.mushrooms.service.exceptions.MushroomHunterServiceDataAccessException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Buvko
@@ -95,6 +96,7 @@ public class VisitServiceImpl implements VisitService {
                 visitsByHunter.add(v);
             }
         }
+
         return visitsByHunter;
     }
 
@@ -112,6 +114,7 @@ public class VisitServiceImpl implements VisitService {
                 visitsByForest.add(v);
             }
         }
+
         return visitsByForest;
     }
 
@@ -133,6 +136,7 @@ public class VisitServiceImpl implements VisitService {
                 }
             }
         }
+
         return visitsByMushroom;
     }
 

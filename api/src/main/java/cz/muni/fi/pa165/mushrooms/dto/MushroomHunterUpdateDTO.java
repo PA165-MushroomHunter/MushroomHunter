@@ -1,9 +1,11 @@
 package cz.muni.fi.pa165.mushrooms.dto;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 
 /**
  * The DTO to be used at generic user update.

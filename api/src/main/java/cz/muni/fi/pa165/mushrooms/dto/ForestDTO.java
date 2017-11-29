@@ -13,6 +13,8 @@ import javax.validation.constraints.Size;
 public class ForestDTO {
 
     private Long id;
+    @NotNull
+    @Size(min = 3, max = 50)
     private String name;
     private String description;
 

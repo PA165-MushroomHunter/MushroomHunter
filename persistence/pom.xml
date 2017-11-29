@@ -97,6 +97,7 @@
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
             <version>2.2.4</version>
+            <scope>test</scope><!-- conflicts with tomcat libraries, needed only for tests anyway -->
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -106,6 +107,7 @@
             <groupId>org.glassfish.web</groupId>
             <artifactId>javax.el</artifactId>
             <version>2.2.4</version>
+            <scope>test</scope><!-- conflicts with tomcat libraries, needed only for tests anyway -->
         </dependency>
 
         <dependency>
