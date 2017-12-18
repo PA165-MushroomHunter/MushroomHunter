@@ -1,6 +1,5 @@
 package cz.muni.fi.pa165.mushrooms.service.facade;
 
-import cz.muni.fi.pa165.mushrooms.dao.ForestDao;
 import cz.muni.fi.pa165.mushrooms.dto.ForestDTO;
 import cz.muni.fi.pa165.mushrooms.dto.MushroomDTO;
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
@@ -9,8 +8,6 @@ import cz.muni.fi.pa165.mushrooms.facade.ForestFacade;
 import cz.muni.fi.pa165.mushrooms.service.BeanMappingService;
 import cz.muni.fi.pa165.mushrooms.service.ForestService;
 import cz.muni.fi.pa165.mushrooms.service.MushroomService;
-import cz.muni.fi.pa165.mushrooms.service.exceptions.EntityFindServiceException;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,7 +69,7 @@ public class ForestFacadeImpl implements ForestFacade {
     }
 
     @Override
-    public void updateForest(ForestDTO forest) {
+    public ForestDTO updateForest(ForestDTO forest) {
         if (forest == null) {
             throw new IllegalArgumentException("Null forestDTO cannot be updated");
         }
@@ -84,10 +81,11 @@ public class ForestFacadeImpl implements ForestFacade {
         entityForest.setName(forest.getName());
         service.updateForest(entityForest);
 
+        return forest;
     }
 
     @Override
-    public void createForest(ForestDTO forest) {
+    public ForestDTO createForest(ForestDTO forest) {
         if (forest == null) {
             throw new IllegalArgumentException("Null forestDTO cannot be updated");
         }
@@ -97,6 +95,7 @@ public class ForestFacadeImpl implements ForestFacade {
 
         service.createForest(newForest);
         forest.setId(newForest.getId());
+        return forest;
     }
 
     @Override
