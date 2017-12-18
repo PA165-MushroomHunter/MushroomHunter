@@ -44,19 +44,19 @@
             </td>
 
             <td>
-                <button class="glyphicon glyphicon-trash btn" onclick=" openModal(${forest.id}) "></button>
+                <button class="glyphicon glyphicon-trash btn" onclick=" openModal(${forests.id}) "></button>
 
-                <my:modal_template suffix="${forest.id}" title="Delete forest">
+                <my:modal_template suffix="${forests.id}" title="Delete forest">
                   <jsp:attribute name="body">
                       <strong>Are you sure you want to delete forest '<c:out
-                              value="${forest.name}"/>'?</strong>
+                              value="${forests.name}"/>'?</strong>
                   </jsp:attribute>
                   <jsp:attribute name="footer">
                       <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                              onclick="closeModal(${forest.id})">Close
+                              onclick="closeModal(${forests.id})">Close
                       </button>
                     <form style="float: right; margin-left: 10px" method="post"
-                          action="${pageContext.request.contextPath}/${end}/delete/${forest.id}">
+                          action="${pageContext.request.contextPath}/${end}/delete/${forests.id}">
                         <input type="submit" class="btn btn-primary" value="Delete"/>
                     </form>
                   </jsp:attribute>
@@ -64,7 +64,7 @@
             </td>
 
             <td>
-                <button class="glyphicon glyphicon-edit btn" onclick="location.href='${pageContext.request.contextPath}/${end}/edit/${forest.id}'">
+                <button class="glyphicon glyphicon-edit btn" onclick="location.href='${pageContext.request.contextPath}/${end}/edit/${forests.id}'">
                 </button>
             </td>
         </tr>
