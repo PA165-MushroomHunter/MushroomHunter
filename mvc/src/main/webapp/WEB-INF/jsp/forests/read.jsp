@@ -23,12 +23,11 @@
     </script>
 
     <table class="table"> <%-- TODO: change size, add create visit button--%>
-        <caption>Forest '<c:out value="${forest.name}"/>'</caption>
+        <caption>Forest '<c:out value="${forests.name}"/>'</caption>
         <thead>
         <tr>
             <th>Name</th>
             <th>Description</th>
-            <th>Neco</th>
             <th>Delete</th>
             <th>Update</th>
         </tr>
@@ -37,18 +36,15 @@
         <tbody>
         <tr>
             <td>
-                <my:a href="/${end}/read/${forest.id}">
-                <c:out value="${forest.name} "/>
-                <c:out value="${forest.description}"/> </my:a>
-            </td>
-            <td>
-                <c:out value="${forest.name}"/>
+                <c:out value="${forests.name} "/>
             </td>
 
             <td>
-                <button class="glyphicon glyphicon-trash btn" onclick=" openModal(${forest.id}) ">
-                </button>
+                <c:out value="${forests.description}"/>
+            </td>
 
+            <td>
+                <button class="glyphicon glyphicon-trash btn" onclick=" openModal(${forest.id}) "></button>
 
                 <my:modal_template suffix="${forest.id}" title="Delete forest">
                   <jsp:attribute name="body">
@@ -65,24 +61,19 @@
                     </form>
                   </jsp:attribute>
                 </my:modal_template>
-
             </td>
+
             <td>
-                <button class="glyphicon glyphicon-edit btn"
-                        onclick="location.href='${pageContext.request.contextPath}/${end}/edit/${forest.id}'">
+                <button class="glyphicon glyphicon-edit btn" onclick="location.href='${pageContext.request.contextPath}/${end}/edit/${forest.id}'">
                 </button>
             </td>
         </tr>
-        </tbody>
-    </table>
-    <%-- personal info --%>
-    <pre>
-      <c:out value="${forest.personalInfo}"/>
-    </pre>
 
-    <%-- visits --%>
+        </tbody>
+
+    <%-- visits table --%>
     <pre>
-        <my:visit_table_template tableName="${forest.name}'s visits"/>
+        <my:forest_visit_table_template tableName="${forests.name}'s visits"/>
     </pre>
 
 </jsp:attribute>

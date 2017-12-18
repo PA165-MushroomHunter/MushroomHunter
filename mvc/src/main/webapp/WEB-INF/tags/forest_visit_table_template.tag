@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="my" %>
 
+<c:set var="hunters_path" value="hunters"/>
 <c:set var="visits_path" value="visits"/>
 <c:set var="forests_path" value="forests"/>
 <c:set var="mushrooms_path" value="mushrooms"/>
@@ -12,7 +13,7 @@
     <thead>
     <tr>
         <th>Date</th>
-        <th>Location</th>
+        <th>Hunter</th>
         <th>Found mushrooms</th>
     </tr>
     </thead>
@@ -23,7 +24,8 @@
                 <my:a href="/${visits_path}/read/${visit.id}"><c:out value="${visit.date}"/> </my:a>
             </td>
             <td>
-                <my:a href="/${forests_path}/read/${visit.forest.id}"><c:out value="${visit.forest.name}"/> </my:a>
+                <my:a href="/${hunters_path}/read/${visit.hunter.id}"><c:out value="${visit.hunter.firstName} "/>
+                <c:out value="${visit.hunter.surname}"/></my:a>
             </td>
             <td>
                 <c:forEach items="${visit.mushrooms}" var="mushroom">

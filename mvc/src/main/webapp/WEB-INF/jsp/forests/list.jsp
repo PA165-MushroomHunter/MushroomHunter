@@ -41,9 +41,11 @@
                     <c:out value="${forest.name} "/>
                     </my:a>
                   </td>
+
                   <td>
                     <c:out value="${forest.description}"/>
                   </td>
+
                   <td>
                     <button class="glyphicon glyphicon-trash btn" onclick=" openModal(${forest.id}) ">
                     </button>
@@ -62,8 +64,8 @@
                         </form>
                       </jsp:attribute>
                     </my:modal_template>
-
                   </td>
+
                   <td>
                     <button class="glyphicon glyphicon-edit btn" onclick="location.href='${pageContext.request.contextPath}/${end}/edit/${forest.id}'">
                     </button>
