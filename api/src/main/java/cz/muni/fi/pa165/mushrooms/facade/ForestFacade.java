@@ -54,7 +54,7 @@ public interface ForestFacade {
      * @throws IllegalArgumentException on null forest given as a parameter
      *                                  or if the forest given as a parameter doesn't exist in the database
      */
-    void updateForest(ForestDTO forest);
+    ForestDTO updateForest(ForestDTO forest);
 
     /**
      * Takes an object of type Forest and creates an entry in a database.
@@ -62,7 +62,7 @@ public interface ForestFacade {
      * @param forest is a Forest to be created in a database
      * @throws IllegalArgumentException on null forest given as a parameter
      */
-    void createForest(ForestDTO forest);
+    ForestDTO createForest(ForestDTO forest);
 
     /**
      * Takes an object of type Mushroom and returns list of Forests where you can find this mushroom.
