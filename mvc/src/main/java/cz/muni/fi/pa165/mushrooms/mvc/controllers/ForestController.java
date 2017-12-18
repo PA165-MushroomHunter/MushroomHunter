@@ -38,8 +38,6 @@ public class ForestController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String list(Model model, HttpServletRequest request, UriComponentsBuilder uriBuilder, RedirectAttributes redirectAttributes) {
         log.debug("[FOREST] List all");
-        String res = Tools.redirectNonAdmin(request, uriBuilder, redirectAttributes);
-        if (res != null) return res;
         model.addAttribute("forests", forestFacade.findAllForests());
         return "forests/list";
     }
@@ -57,6 +55,8 @@ public class ForestController {
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
     public String editForest(@PathVariable long id, Model model, HttpServletRequest request, UriComponentsBuilder uriBuilder, RedirectAttributes redirectAttributes) {
+        String res = Tools.redirectNonAdmin(request, uriBuilder, redirectAttributes);
+        if(res != null) return res;
 
         log.debug("[Forest] Edit {}", id);
         ForestDTO forestDTO = forestFacade.findById(id);
@@ -68,6 +68,10 @@ public class ForestController {
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     public String delete(@PathVariable long id, Model model, HttpServletRequest request,
                          UriComponentsBuilder uriBuilder, RedirectAttributes redirectAttributes) {
+
+        String res = Tools.redirectNonAdmin(request, uriBuilder, redirectAttributes);
+        if(res != null) return res;
+
         ForestDTO forest = forestFacade.findById(id);
         forestFacade.deleteForest(id);
         log.debug("delete forest({})", id);
@@ -81,8 +85,12 @@ public class ForestController {
                          @Valid @ModelAttribute("forestEdit") ForestDTO formBean,
                          BindingResult bindingResult,
                          Model model,
+                         HttpServletRequest request,
                          UriComponentsBuilder uriBuilder,
                          RedirectAttributes redirectAttributes) {
+
+        String res = Tools.redirectNonAdmin(request, uriBuilder, redirectAttributes);
+        if(res != null) return res;
 
         log.debug("Forest - update");
         if (bindingResult.hasErrors()) {
@@ -108,8 +116,13 @@ public class ForestController {
 
 
     @RequestMapping(value = "/new", method = RequestMethod.POST)
-    public String create(@Valid @ModelAttribute("forestCreate") ForestDTO formBean, BindingResult bindingResult,
-                         Model model, RedirectAttributes redirectAttributes, UriComponentsBuilder uriBuilder) {
+    public String create(@Valid @ModelAttribute("forestCreate") ForestDTO formBean,HttpServletRequest request,
+                         BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes,
+                         UriComponentsBuilder uriBuilder) {
+
+        String res = Tools.redirectNonAdmin(request, uriBuilder, redirectAttributes);
+        if(res != null) return res;
+
         log.debug("create(forestCreate={})", formBean);
         //in case of validation error forward back to the the form
         if (bindingResult.hasErrors()) {
@@ -122,6 +135,12 @@ public class ForestController {
             }
             return "forests/register";
         }
+
+        if(forestFacade.findByName(formBean.getName()) != null){
+            redirectAttributes.addFlashAttribute("alert_warning", "Forest " + formBean.getName() + " already exists!");
+            return "redirect:" + uriBuilder.path("/forests").build().toUriString();
+        }
+
         //create forest
         ForestDTO createdDTO = forestFacade.createForest(formBean);
         //report success

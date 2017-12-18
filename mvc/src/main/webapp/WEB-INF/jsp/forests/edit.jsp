@@ -21,7 +21,7 @@
         </div>
 
         <div class="form-group ${description_error?'has-error':''}">
-          <form:label path="description" cssClass="col-sm-2 control-label">Surname</form:label>
+          <form:label path="description" cssClass="col-sm-2 control-label">Description</form:label>
           <div class="col-sm-10">
             <form:input path="description" cssClass="form-control"/>
             <form:errors path="description" cssClass="help-block"/>
@@ -29,11 +29,6 @@
 
       <button class="btn btn-primary" type="submit">Update Forest</button>
     </form:form>
-
-  <button class="btn"
-          onclick="location.href='${pageContext.request.contextPath}/forests/${end}'">
-    Return
-  </button>
 
 </jsp:attribute>
 </my:pagetemplate>

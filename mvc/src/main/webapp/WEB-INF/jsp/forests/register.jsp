@@ -29,11 +29,6 @@
 
           <button class="btn btn-primary" type="submit">Save Forest</button>
 
-          <button class="btn btn-primary"
-                     onclick="location.href='${pageContext.request.contextPath}/forests/${end}'">
-                 Return
-          </button>
-
 </form:form>
 </jsp:attribute>
 </my:pagetemplate>
