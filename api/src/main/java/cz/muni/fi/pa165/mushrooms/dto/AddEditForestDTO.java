@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
  */
 
 public class AddEditForestDTO {
-
+    private Long id;
     @NotNull
     @Size(min = 3, max = 50)
     private String name;
@@ -32,6 +32,14 @@ public class AddEditForestDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override

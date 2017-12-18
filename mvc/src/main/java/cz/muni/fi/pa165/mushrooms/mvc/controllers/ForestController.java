@@ -1,11 +1,15 @@
 package cz.muni.fi.pa165.mushrooms.mvc.controllers;
 
+import cz.muni.fi.pa165.mushrooms.dto.AddEditForestDTO;
 import cz.muni.fi.pa165.mushrooms.dto.ForestDTO;
 import cz.muni.fi.pa165.mushrooms.facade.ForestFacade;
 import cz.muni.fi.pa165.mushrooms.facade.VisitFacade;
 import cz.muni.fi.pa165.mushrooms.mvc.Tools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -82,7 +85,7 @@ public class ForestController {
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.POST)
     public String update(@PathVariable long id,
-                         @Valid @ModelAttribute("forestEdit") ForestDTO formBean,
+                         @Valid @ModelAttribute("forestEdit") AddEditForestDTO formBean,
                          BindingResult bindingResult,
                          Model model,
                          HttpServletRequest request,
@@ -116,14 +119,14 @@ public class ForestController {
 
 
     @RequestMapping(value = "/new", method = RequestMethod.POST)
-    public String create(@Valid @ModelAttribute("forestCreate") ForestDTO formBean,HttpServletRequest request,
+    public String create(@Valid @ModelAttribute("forestCreate") AddEditForestDTO formBean,HttpServletRequest request,
                          BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes,
                          UriComponentsBuilder uriBuilder) {
-
+        System.err.println("FOOOOOO--------------");
         String res = Tools.redirectNonAdmin(request, uriBuilder, redirectAttributes);
         if(res != null) return res;
 
-        log.debug("create(forestCreate={})", formBean);
+        log.info("create(forestCreate={})", formBean);
         //in case of validation error forward back to the the form
         if (bindingResult.hasErrors()) {
             for (ObjectError ge : bindingResult.getGlobalErrors()) {

@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.mushrooms.service.facade;
 
+import cz.muni.fi.pa165.mushrooms.dto.AddEditForestDTO;
 import cz.muni.fi.pa165.mushrooms.dto.ForestDTO;
 import cz.muni.fi.pa165.mushrooms.dto.MushroomDTO;
 import cz.muni.fi.pa165.mushrooms.entity.Forest;
@@ -69,23 +70,23 @@ public class ForestFacadeImpl implements ForestFacade {
     }
 
     @Override
-    public ForestDTO updateForest(ForestDTO forest) {
+    public ForestDTO updateForest(AddEditForestDTO forest) {
         if (forest == null) {
             throw new IllegalArgumentException("Null forestDTO cannot be updated");
         }
         Forest entityForest = service.findForestById(forest.getId());
         if (entityForest == null) {
-            //TODO: react to it somehow
+            throw new IllegalArgumentException("no forest found for id " + forest.getId());
         }
         entityForest.setDescription(forest.getDescription());
         entityForest.setName(forest.getName());
         service.updateForest(entityForest);
 
-        return forest;
+        return beanMappingService.mapTo(service.findForestById(forest.getId()), ForestDTO.class);
     }
 
     @Override
-    public ForestDTO createForest(ForestDTO forest) {
+    public ForestDTO createForest(AddEditForestDTO forest) {
         if (forest == null) {
             throw new IllegalArgumentException("Null forestDTO cannot be updated");
         }
@@ -94,8 +95,8 @@ public class ForestFacadeImpl implements ForestFacade {
         newForest.setDescription(forest.getDescription());
 
         service.createForest(newForest);
-        forest.setId(newForest.getId());
-        return forest;
+
+        return beanMappingService.mapTo(service.findForestByName(forest.getName()), ForestDTO.class);
     }
 
     @Override

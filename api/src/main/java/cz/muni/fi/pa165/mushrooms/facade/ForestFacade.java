@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.mushrooms.facade;
 
+import cz.muni.fi.pa165.mushrooms.dto.AddEditForestDTO;
 import cz.muni.fi.pa165.mushrooms.dto.ForestDTO;
 import cz.muni.fi.pa165.mushrooms.dto.MushroomDTO;
 
@@ -54,7 +55,7 @@ public interface ForestFacade {
      * @throws IllegalArgumentException on null forest given as a parameter
      *                                  or if the forest given as a parameter doesn't exist in the database
      */
-    ForestDTO updateForest(ForestDTO forest);
+    ForestDTO updateForest(AddEditForestDTO forest);
 
     /**
      * Takes an object of type Forest and creates an entry in a database.
@@ -62,7 +63,7 @@ public interface ForestFacade {
      * @param forest is a Forest to be created in a database
      * @throws IllegalArgumentException on null forest given as a parameter
      */
-    ForestDTO createForest(ForestDTO forest);
+    ForestDTO createForest(AddEditForestDTO forest);
 
     /**
      * Takes an object of type Mushroom and returns list of Forests where you can find this mushroom.
