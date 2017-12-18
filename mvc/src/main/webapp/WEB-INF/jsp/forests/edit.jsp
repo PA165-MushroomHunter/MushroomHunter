@@ -31,7 +31,7 @@
     </form:form>
 
   <button class="btn"
-          onclick="location.href='${pageContext.request.contextPath}/${end}'">
+          onclick="location.href='${pageContext.request.contextPath}/forests/${end}'">
     Return
   </button>
 
