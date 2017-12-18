@@ -5,61 +5,35 @@
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
-<my:pagetemplate title="Edit hunter">
+<my:pagetemplate title="New Forest">
 <jsp:attribute name="body">
-  <c:set var="end" value="hunters"/>
 
-    <form:form method="post" action="${pageContext.request.contextPath}/${end}/edit/${hunterEdit.id}"
-               modelAttribute="hunterEdit" cssClass="form-horizontal">
+    <form:form method="post" action="${pageContext.request.contextPath}/forests/new/"
+               modelAttribute="forestCreate" cssClass="form-horizontal">
 
-        <div class="form-group ${firstName_error?'has-error':''}">
-          <form:label path="firstName" cssClass="col-sm-2 control-label">First Name</form:label>
-          <div class="col-sm-10">
-            <form:input path="firstName" cssClass="form-control"/>
-            <form:errors path="firstName" cssClass="help-block"/>
+          <div class="form-group ${name_error?'has-error':''}">
+              <form:label path="name" cssClass="col-sm-2 control-label">Name</form:label>
+              <div class="col-sm-10">
+                 <form:input path="name" cssClass="form-control"/>
+                 <form:errors path="name" cssClass="help-block"/>
+              </div>
           </div>
-        </div>
 
-        <div class="form-group ${surname_error?'has-error':''}">
-          <form:label path="surname" cssClass="col-sm-2 control-label">Surname</form:label>
-          <div class="col-sm-10">
-            <form:input path="surname" cssClass="form-control"/>
-            <form:errors path="surname" cssClass="help-block"/>
+          <div class="form-group ${name_error?'has-error':''}">
+               <form:label path="description" cssClass="col-sm-2 control-label">Description</form:label>
+               <div class="col-sm-10">
+                  <form:input path="description" cssClass="form-control"/>
+                  <form:errors path="description" cssClass="help-block"/>
+               </div>
           </div>
-        </div>
-       <div class="form-group ${userNickname_error?'has-error':''}">
-         <form:label path="userNickname" cssClass="col-sm-2 control-label">Nickname</form:label>
-         <div class="col-sm-10">
-           <form:input path="userNickname" cssClass="form-control"/>
-           <form:errors path="userNickname" cssClass="help-block"/>
-         </div>
-       </div>
 
-      <c:if test="${sessionScope.user.admin}"> <%-- TODO: reset session after admin change and self delete--%>
-         <div class="form-group ${admin_error?'has-error':''}">
-           <form:label path="admin" cssClass="col-sm-2 control-label">Admin</form:label>
-           <div class="col-sm-10">
-             <form:checkbox path="admin" cssClass="form-control"/>
-             <form:errors path="admin" cssClass="help-block"/>
-           </div>
-         </div>
-      </c:if>
+          <button class="btn btn-primary" type="submit">Save Forest</button>
 
-     <div class="form-group ${personalInfo_error?'has-error':''}">
-       <form:label path="personalInfo" cssClass="col-sm-2 control-label">Personal info</form:label>
-       <div class="col-sm-10">
-         <form:textarea path="personalInfo" cssClass="form-control"/>
-         <form:errors path="personalInfo" cssClass="help-block"/>
-       </div>
-     </div>
+          <button class="btn btn-primary"
+                     onclick="location.href='${pageContext.request.contextPath}/forests/${end}'">
+                 Return
+          </button>
 
-      <button class="btn btn-primary" type="submit">Update User</button>
-    </form:form>
-
-  <button class="btn"
-          onclick="location.href='${pageContext.request.contextPath}/${end}'">
-    Return
-  </button>
-
+</form:form>
 </jsp:attribute>
 </my:pagetemplate>

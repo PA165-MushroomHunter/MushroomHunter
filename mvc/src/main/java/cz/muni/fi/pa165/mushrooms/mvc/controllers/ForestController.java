@@ -1,8 +1,8 @@
 package cz.muni.fi.pa165.mushrooms.mvc.controllers;
 
 import cz.muni.fi.pa165.mushrooms.dto.ForestDTO;
-import cz.muni.fi.pa165.mushrooms.entity.Forest;
 import cz.muni.fi.pa165.mushrooms.facade.ForestFacade;
+import cz.muni.fi.pa165.mushrooms.facade.VisitFacade;
 import cz.muni.fi.pa165.mushrooms.mvc.Tools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +32,9 @@ public class ForestController {
     @Inject
     private ForestFacade forestFacade;
 
+    @Inject
+    private VisitFacade visitFacade;
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String list(Model model, HttpServletRequest request, UriComponentsBuilder uriBuilder, RedirectAttributes redirectAttributes) {
         log.debug("[FOREST] List all");
@@ -44,7 +47,11 @@ public class ForestController {
     @RequestMapping(value = "/read/{id}", method = RequestMethod.GET)
     public String read(@PathVariable long id, Model model) {
         log.debug("[FOREST] Read ({})", id);
+
+        ForestDTO forest = forestFacade.findById(id);
+
         model.addAttribute("forests", forestFacade.findById(id));
+        model.addAttribute("visits", visitFacade.listAllVisitsForForest(forest));
         return "forests/read";
     }
 
@@ -69,9 +76,9 @@ public class ForestController {
     }
 
 
-    @RequestMapping(value="/edit/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.POST)
     public String update(@PathVariable long id,
-                         @Valid @ModelAttribute("forestEdit")ForestDTO formBean,
+                         @Valid @ModelAttribute("forestEdit") ForestDTO formBean,
                          BindingResult bindingResult,
                          Model model,
                          UriComponentsBuilder uriBuilder,
