@@ -42,19 +42,17 @@ public class AddEditForestDTO {
         this.id = id;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof AddEditForestDTO)) return false;
-
-        AddEditForestDTO AddEditForestDTO = (AddEditForestDTO) o;
-        return Objects.equals(getName(), AddEditForestDTO.getName());
+        AddEditForestDTO that = (AddEditForestDTO) o;
+        return Objects.equals(getName(), that.getName());
     }
 
     @Override
     public int hashCode() {
-        int result = getName().hashCode();
-        result = 31 * result + getDescription().hashCode();
-        return result;
+        return Objects.hash(getName());
     }
 }
