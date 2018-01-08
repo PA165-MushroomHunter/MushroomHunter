@@ -16,9 +16,23 @@
                   <div class="form-group">
                       <div class="col-sm-10">
                           <select name="forestId">
-                              <option></option>
+                              <c:choose>
+                                  <c:when test="${selectedForestId == null}">
+                                      <option value="${null}" selected="selected"></option>
+                                  </c:when>
+                                  <c:otherwise>
+                                      <option value="${null}"></option>
+                                  </c:otherwise>
+                              </c:choose>
                               <c:forEach items="${forests}" var="forest">
-                                <option value="${forest.id}">${forest.name}</option>
+                                  <c:choose>
+                                    <c:when test="${selectedForestId != null and forest.id == selectedForestId}">
+                                        <option value="${forest.id}" selected="selected">${forest.name}</option>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="${forest.id}">${forest.name}</option>
+                                    </c:otherwise>
+                                </c:choose>
                               </c:forEach>
                           </select>
                       </div>

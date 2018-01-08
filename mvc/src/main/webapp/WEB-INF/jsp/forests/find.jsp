@@ -15,9 +15,16 @@
               <form:form method="post" action="${pageContext.request.contextPath}/forests/find" cssClass="form-horizontal">
                   <div class="form-group">
                       <div class="col-sm-10">
-                          <select name="mushroomId">
+                          <select name="mushroomId" >
                               <c:forEach items="${mushrooms}" var="mushroom">
-                                <option value="${mushroom.id}">${mushroom.name}</option>
+                                  <c:choose>
+                                    <c:when test="${selectedMushroom != null and mushroom.id == selectedMushroom.id}">
+                                        <option value="${mushroom.id}" selected="selected">${mushroom.name}</option>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="${mushroom.id}">${mushroom.name}</option>
+                                    </c:otherwise>
+                                </c:choose>
                               </c:forEach>
                           </select>
                       </div>
@@ -41,7 +48,6 @@
                     <td>
                     <my:a href="/forests/read/${forest.key.id}"><c:out value="${forest.key.name} "/></my:a>
                     </td>
-
                     <td>
                         <c:out value="${forest.value}"/>
                     </td>

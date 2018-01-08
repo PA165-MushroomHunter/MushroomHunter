@@ -200,6 +200,7 @@ public class HunterController {
 
         model.addAttribute("forests", forestFacade.findAllForests());
         model.addAttribute("hunters", huntersWithMostVisits);
+        model.addAttribute("selectedForestId", forestId);
 
         return "hunters/best";
     }
