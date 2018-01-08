@@ -203,7 +203,7 @@ public class ForestController {
 
         model.addAttribute("mushrooms", mushroomFacade.findAllMushrooms());
         model.addAttribute("forests", forestsWithNumbers);
-
+        model.addAttribute("selectedMushroom", mushroomById);
         return "forests/find";
     }
 
